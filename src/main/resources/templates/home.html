@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header" />
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <nav th:replace="fragments/nav :: nav" />
+            <div class="jumbotron">
+                <h2>
+                    물건을 잃어버리셨나요?
+                </h2>
+                <p>
+                    잃어버린 물건이 여기에 등록되어 있을 수도 있습니다! 혹은 잃어버린 물건을 찾아주거나, 찾고 싶으시다면 게시판을 이용해보세요!
+                </p>
+                <p>
+                    <a class="btn btn-primary btn-large" href="/lost">이동</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
