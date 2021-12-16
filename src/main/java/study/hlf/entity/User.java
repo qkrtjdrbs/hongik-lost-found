@@ -1,14 +1,13 @@
 package study.hlf.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import study.hlf.dto.SignUpDto;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 public class User {
 
@@ -22,5 +21,19 @@ public class User {
 
     @Enumerated(value = EnumType.STRING)
     private Role role;
+
+    public User(String username, String password, String email, Role role) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+    }
+
+    public User(SignUpDto dto) {
+        this.username = dto.getUsername();
+        this.password = dto.getPassword();
+        this.email = dto.getEmail();
+        this.role = Role.ROLE_USER;
+    }
 
 }
