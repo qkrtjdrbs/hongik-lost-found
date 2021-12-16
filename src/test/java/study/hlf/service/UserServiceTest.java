@@ -19,12 +19,10 @@ class UserServiceTest {
     @Test
     void 회원가입(){
         SignUpDto user = new SignUpDto("user", "123", "test");
-        user.setEncoder(encoder);
         Long saveId = userService.save(user);
         assertThat(saveId).isEqualTo(1);
 
         SignUpDto user2 = new SignUpDto("user", "123e", "testc");
-        user2.setEncoder(encoder);
         Long id = userService.save(user2);
         assertThat(id).isNull();
     }

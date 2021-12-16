@@ -22,7 +22,6 @@ import javax.validation.Valid;
 public class UserController {
 
     private final UserService userService;
-    private final BCryptPasswordEncoder encoder;
 
     @GetMapping("/new")
     public String signUpForm(Model model){
@@ -37,10 +36,8 @@ public class UserController {
             for (FieldError fieldError : bindingResult.getFieldErrors()) {
                 log.info("bindingResult = {}", fieldError.getCode());
             }
-
             return "signUp";
         }
-        user.setEncoder(encoder);
         Long saveId = userService.save(user);
         if(saveId == null){
             bindingResult.reject("duplicatedUsername", "이미 존재하는 아이디 입니다.");
