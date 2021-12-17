@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import study.hlf.dto.SignUpDto;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -21,6 +23,9 @@ public class User {
 
     @Enumerated(value = EnumType.STRING)
     private Role role;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Board> boards = new ArrayList<>();
 
     public User(String username, String password, String email, Role role) {
         this.username = username;
