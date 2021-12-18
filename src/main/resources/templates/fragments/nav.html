@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<nav th:fragment="nav" class="navbar navbar-expand-lg navbar-light bg-light navbar-dark bg-dark static-top">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+<nav th:fragment="nav" class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+    <a class="navbar-brand" href="/">분실물 센터</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
-    </button> <a class="navbar-brand" href="/">분실물 센터</a>
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
-            <li class="nav-item active">
-                <a class="nav-link" href="/submit">글 등록 <span class="sr-only">(current)</span></a>
+            <li class="nav-item">
+                <a class="nav-link active" href="/submit">글 등록</a>
             </li>
         </ul>
         <ul class="navbar-nav ml-md-auto">
