@@ -1,5 +1,6 @@
 package study.hlf.entity;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import study.hlf.dto.SignUpDto;
@@ -10,8 +11,8 @@ import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor
-public class User {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class User extends BaseTimeEntity {
 
     @Id @GeneratedValue
     @Column(name = "user_id")

@@ -1,13 +1,14 @@
 package study.hlf.entity;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
-@Getter @NoArgsConstructor
-public class Board {
+@Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Board extends BaseTimeEntity {
 
     @Id @GeneratedValue
     @Column(name = "board_id")
