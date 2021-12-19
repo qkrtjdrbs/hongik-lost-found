@@ -17,6 +17,8 @@ public class Board extends BaseTimeEntity {
     @Lob
     private String content;
 
+    private int hits;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -25,5 +27,9 @@ public class Board extends BaseTimeEntity {
     public void addUser(User user){
         this.user = user;
         user.getBoards().add(this);
+    }
+
+    public void addHit(){
+        this.hits++;
     }
 }
