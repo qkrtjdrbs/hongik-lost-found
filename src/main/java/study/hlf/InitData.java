@@ -17,7 +17,7 @@ public class InitData {
 
     @PostConstruct
     public void init(){
-        for(int i=1;i<10;i++){
+        for(int i=1;i<3;i++){
             userService.save(new SignUpDto("data"+i, "1234", "a@a.com"));
         }
     }
