@@ -41,7 +41,7 @@ public class BoardController {
         if(bindingResult.hasErrors()){
             return "submit";
         }
-        Long boardId = boardService.writeBoard(loginUser, form);
+        Long boardId = boardService.writeBoard(loginUser.getId(), form);
         if(boardId == null){
             bindingResult.reject("submitFail", "서버 오류로 글 저장에 실패했습니다.");
             return "submit";

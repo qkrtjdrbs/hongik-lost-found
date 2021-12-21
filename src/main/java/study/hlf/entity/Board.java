@@ -26,15 +26,17 @@ public class Board extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Board(SubmitDto form){
+    public Board(SubmitDto form, User user){
         this.title = form.getTitle();
         this.content = form.getContent();
         this.hits = 0;
+        this.addUser(user);
     }
 
     //==연관관계 설정 메소드==//
     public void addUser(User user){
         this.user = user;
+        user.getBoards().add(this);
     }
 
     //==비즈니스 메소드==//
