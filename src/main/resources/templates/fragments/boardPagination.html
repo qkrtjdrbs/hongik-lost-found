@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<nav th:fragment="boardPagination(list)" aria-label="board-pagination">
+    <!--표에 사용될 변수값 초기화 -->
+    <ul class="pagination justify-content-center"
+        th:with="start=${T(Math).floor(list.number/10)*10 + 1},
+                    last=(${start+9 < list.totalPages ? start+9 : list.totalPages})">
+        <th:block th:with="
+                firstAddr=@{/board(page=1)},
+                prevAddr=@{/board(page=${list.number})},
+                nextAddr=@{/board(page=${list.number+2})},
+                lastAddr=@{/board(page=${list.totalPages})}">
+            <li class="page-item">
+                <a th:href="${firstAddr}" class="page-link" aria-label="First">
+                    <span aria-hidden="true">처음</span>
+                </a>
+            </li>
+            <!-- 이전 페이지로 가기 버튼 -->
+            <li class="page-item" th:classappend="${list.first} ? 'disabled'">
+                <a th:href="${list.first} ? '#' :${prevAddr}"
+                   class="page-link"
+                   aria-label="Previous">
+                    <span aria-hidden="true">&lt;</span>
+                </a>
+            </li>
+            <!--1,2,3,4,.. 등 페이지-->
+            <li class="page-item" th:each="page: ${#numbers.sequence(start, last)}"
+                th:classappend="${page==list.number+1} ? 'active'">
+                <a class="page-link" th:text="${page}" th:href="@{/board(page=${page})}"></a>
+            </li>
+            <!--다음 페이지로 -->
+            <li class="page-item" th:classappend="${list.last} ? 'disabled'">
+                <a class="page-link" th:href="${list.last} ? '#' : ${nextAddr}"
+                   aria-label="Next">
+                    <span aria-hidden="true">&gt;</span>
+                </a>
+            </li>
+            <!--맨 마지막 페이지로 이동 -->
+            <li class="page-item">
+                <a class="page-link" th:href="${lastAddr}" aria-label="Last">
+                    <span aria-hidden="true">끝</span>
+                </a>
+            </li>
+        </th:block>
+    </ul>
+</nav>

@@ -5,14 +5,33 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
-            <nav th:replace="fragments/nav :: nav" />
-            <div class="jumbotron">
-                <p>
-                    임시 게시판
-                </p>
-            </div>
+            <nav th:replace="fragments/navs/nav :: nav(user=${user})" />
+
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>날짜</th>
+                    <th>조회 수</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="list : ${board}">
+                    <td><span th:text="${list.id}"></span></td>
+                    <td><a th:href="@{/board/{id} (id=${list.id})}"><span th:text="${list.title}"></span></a></td>
+                    <td><span th:text="${list.user.username}"></span></td>
+                    <td><span th:text="${{list.createdDate}}"></span></td>
+                    <td><span th:text="${list.hits}"></span></td>
+                </tr>
+                </tbody>
+            </table>
+
         </div>
     </div>
+    <nav th:replace="fragments/boardPagination :: boardPagination(list=${pagingList})" />
 </div>
 </body>
 </html>
