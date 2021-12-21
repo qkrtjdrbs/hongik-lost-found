@@ -5,7 +5,12 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
-            <nav th:replace="fragments/nav :: nav" />
+            <div th:if="${user}">
+                <nav th:replace="fragments/loginNav :: loginNav(user=${user})" />
+            </div>
+            <div th:unless="${user}">
+                <nav th:unless="${user}" th:replace="fragments/nav :: nav" />
+            </div>
             <div class="jumbotron">
                 <h2>
                     물건을 잃어버리셨나요?

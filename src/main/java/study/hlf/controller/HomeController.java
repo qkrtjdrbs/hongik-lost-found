@@ -15,10 +15,7 @@ public class HomeController {
             @SessionAttribute(required = false, name = Const.LOGIN_USER) User loginUser,
             Model model
     ){
-        if(loginUser == null){
-            return "home";
-        }
         model.addAttribute("user", loginUser);
-        return "loginHome";
+        return "home";
     }
 }
