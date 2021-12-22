@@ -15,6 +15,7 @@
                     <th>작성자</th>
                     <th>날짜</th>
                     <th>조회 수</th>
+                    <th>상태</th>
                 </tr>
                 </thead>
 
@@ -25,13 +26,15 @@
                     <td><span th:text="${list.user.username}"></span></td>
                     <td><span th:text="${{list.createdDate}}"></span></td>
                     <td><span th:text="${list.hits}"></span></td>
+                    <td th:if="${list.status.name()}==LOST"><span class="text-info">찾는 중</span></td>
+                    <td th:if="${list.status.name()}==FOUND"><span class="text-secondary">찾음</span></td>
                 </tr>
                 </tbody>
             </table>
 
         </div>
     </div>
-    <nav th:replace="fragments/boardPagination :: boardPagination(list=${pagingList})" />
+    <nav th:replace="fragments/boardPagination :: boardPagination(list=${pagingList}, url=${url})" />
 </div>
 </body>
 </html>

@@ -8,12 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import study.hlf.dto.SubmitDto;
 import study.hlf.entity.Board;
-import study.hlf.entity.User;
 import study.hlf.repository.BoardRepository;
+import study.hlf.repository.BoardSearch;
 import study.hlf.repository.UserRepository;
 
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,9 +27,15 @@ public class BoardService {
         return boardRepository.save(board).getId();
     }
 
-    public Page<Board> findBoard(Pageable pageable){
+    /*public Page<Board> findBoard(Pageable pageable){
         int page = pageable.getPageNumber() == 0 ? 0 : pageable.getPageNumber() - 1;
         pageable = PageRequest.of(page, pageable.getPageSize(), pageable.getSort().descending());
         return boardRepository.findAll(pageable);
+    }*/
+
+    public Page<Board> searchBoardDynamic(BoardSearch condition, Pageable pageable){
+        int page = pageable.getPageNumber() == 0 ? 0 : pageable.getPageNumber() - 1;
+        pageable = PageRequest.of(page, pageable.getPageSize(), pageable.getSort().descending());
+        return boardRepository.findBoardDynamic(condition, pageable);
     }
 }

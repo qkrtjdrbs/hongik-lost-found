@@ -35,7 +35,6 @@ public class InitData {
         private final BoardService boardService;
 
         public void dbInit(){
-
             for(int i=1;i<3;i++){
                 userService.save(new SignUpDto("data"+i, "1234", "a@a.com"));
             }

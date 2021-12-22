@@ -1,12 +1,14 @@
 package study.hlf.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -16,13 +18,17 @@ import study.hlf.Const;
 import study.hlf.dto.SubmitDto;
 import study.hlf.entity.Board;
 import study.hlf.entity.User;
+import study.hlf.repository.BoardSearch;
 import study.hlf.service.BoardService;
 
 import javax.validation.Valid;
 import java.util.List;
 
+import static org.springframework.util.StringUtils.*;
+
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class BoardController {
 
     private final BoardService boardService;
@@ -51,13 +57,54 @@ public class BoardController {
 
     @GetMapping("/board")
     public String board(@PageableDefault(size = 15, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+                        @ModelAttribute BoardSearch boardSearch,
                         Model model,
                         @SessionAttribute(required = false, name = Const.LOGIN_USER) User user){
-        Page<Board> PagingBoard = boardService.findBoard(pageable);
-        List<Board> board = PagingBoard.getContent();
+        Page<Board> pagingBoard = boardService.searchBoardDynamic(boardSearch, pageable);
+        List<Board> board = pagingBoard.getContent();
+        String url = requestURL(boardSearch);
+
+        log.info("최종 url = {}", url);
+
+        model.addAttribute("url", url);
         model.addAttribute("board", board);
-        model.addAttribute("pagingList", PagingBoard);
+        model.addAttribute("pagingList", pagingBoard);
         model.addAttribute("user", user);
+
         return "board";
+    }
+
+    private String requestURL(BoardSearch boardSearch) {
+        String url = "/board";
+        String parameters = "";
+        if(boardSearch.getUsername() != null){
+            if(hasLength(parameters)){
+                parameters += "&";
+            }
+            parameters = parameters.concat("username="+ boardSearch.getUsername());
+        }
+        if(boardSearch.getTitle() != null){
+            if(hasLength(parameters)){
+                parameters += "&";
+            }
+            parameters = parameters.concat("title="+ boardSearch.getTitle());
+        }
+        if(boardSearch.getContent() != null){
+            if(hasLength(parameters)){
+                parameters += "&";
+            }
+            parameters = parameters.concat("content="+ boardSearch.getContent());
+        }
+        if(boardSearch.getStatus() != null){
+            if(hasLength(parameters)){
+                parameters += "&";
+            }
+            parameters = parameters.concat("status="+ boardSearch.getStatus().name());
+        }
+        if(hasLength(parameters)){
+            return url + "?" + parameters;
+        } else {
+            return url;
+        }
     }
 }
