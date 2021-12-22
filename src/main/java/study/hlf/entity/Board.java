@@ -26,10 +26,13 @@ public class Board extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    private BoardStatus status;
+
     public Board(SubmitDto form, User user){
         this.title = form.getTitle();
         this.content = form.getContent();
         this.hits = 0;
+        this.status = BoardStatus.LOST;
         this.addUser(user);
     }
 
