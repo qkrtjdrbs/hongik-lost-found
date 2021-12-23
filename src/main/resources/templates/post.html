@@ -15,8 +15,11 @@
                     <label for="content">내용</label>
                     <div id="content" th:field="${post.content}" th:text="${post.content}"></div>
                 </div>
+                <hr class="my-4">
             </th:block>
-            <hr class="my-4">
+            <th:block th:unless="${post}">
+                <div type="text" class="alert-warning" th:text="#{post.nonexistence}" ></div>
+            </th:block>
             <a th:if="${user}" th:replace="fragments/board :: submitButton" />
             <table th:replace="fragments/board :: board(board=${board}, page=${pagingList.number+1}, id=${id})" />
         </div>
