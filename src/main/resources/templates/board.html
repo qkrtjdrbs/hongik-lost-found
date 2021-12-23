@@ -10,6 +10,7 @@
             <table th:replace="fragments/board :: board(board=${board}, page=${pagingList.number+1}, id=-1)" />
         </div>
     </div>
+    <div th:replace="fragments/board :: searchForm(boardSearch=${boardSearch})" />
     <nav th:replace="fragments/boardPagination :: boardPagination(list=${pagingList}, url=${url})" />
 </div>
 </body>
