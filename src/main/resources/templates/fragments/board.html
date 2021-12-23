@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<a class="float-right" th:fragment="submitButton" href="/submit">
+    <div class="btn btn-primary my-2 my-sm-0">
+        작성
+    </div>
+</a>
+<table th:fragment="board(board, page, id)" class="table">
+    <thead class="thead-light">
+    <tr>
+        <th>번호</th>
+        <th>제목</th>
+        <th>작성자</th>
+        <th>날짜</th>
+        <th>조회 수</th>
+        <th>상태</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="list : ${board}" th:classappend="${id}==${list.id} ? 'table-primary' : _">
+        <td><span th:text="${list.id}"></span></td>
+        <td><a th:href="@{/board/{id}(id=${list.id},page=${page})}"><span th:text="${list.title}"></span></a></td>
+        <td><span th:text="${list.user.username}"></span></td>
+        <td><span th:text="${{list.createdDate}}"></span></td>
+        <td><span th:text="${list.hits}"></span></td>
+        <td th:if="${list.status.name()}==LOST"><span class="text-info">찾는 중</span></td>
+        <td th:if="${list.status.name()}==FOUND"><span class="text-secondary">찾음</span></td>
+    </tr>
+    </tbody>
+</table>
+</html>

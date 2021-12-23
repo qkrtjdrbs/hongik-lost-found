@@ -10,10 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.*;
 import study.hlf.Const;
 import study.hlf.dto.SubmitDto;
 import study.hlf.entity.Board;
@@ -72,6 +69,29 @@ public class BoardController {
         model.addAttribute("user", user);
 
         return "board";
+    }
+
+    @GetMapping("/board/{id}")
+    public String post(@PageableDefault(size = 15, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+                        @ModelAttribute BoardSearch boardSearch,
+                        @PathVariable Long id,
+                        Model model,
+                        @SessionAttribute(required = false, name = Const.LOGIN_USER) User user){
+        Page<Board> pagingBoard = boardService.searchBoardDynamic(boardSearch, pageable);
+        List<Board> board = pagingBoard.getContent();
+        Board post = boardService.findOneById(id);
+        String url = requestURL(boardSearch);
+
+        log.info("최종 url = {}", url);
+
+        model.addAttribute("id", id);
+        model.addAttribute("post", post);
+        model.addAttribute("url", url);
+        model.addAttribute("board", board);
+        model.addAttribute("pagingList", pagingBoard);
+        model.addAttribute("user", user);
+
+        return "post";
     }
 
     private String requestURL(BoardSearch boardSearch) {

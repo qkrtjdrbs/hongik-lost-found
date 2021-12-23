@@ -12,6 +12,8 @@ import study.hlf.repository.BoardRepository;
 import study.hlf.repository.BoardSearch;
 import study.hlf.repository.UserRepository;
 
+import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +27,13 @@ public class BoardService {
     public Long writeBoard(Long userId, SubmitDto form){
         Board board = new Board(form, userRepository.findById(userId).get());
         return boardRepository.save(board).getId();
+    }
+
+    @Transactional
+    public Board findOneById(Long id){
+        Optional<Board> findPost = boardRepository.findById(id);
+        findPost.ifPresent(Board::addHit);
+        return findPost.orElse(null);
     }
 
     /*public Page<Board> findBoard(Pageable pageable){
