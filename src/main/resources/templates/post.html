@@ -6,22 +6,26 @@
     <div class="row">
         <div class="col-md-12">
             <nav th:replace="fragments/navs/nav :: nav(user=${user})" />
-            <th:block th:if="${post}">
-                <div>
-                    <label for="title">제목</label>
-                    <div type="text" id="title" th:field="${post.title}" th:text="${post.title}" ></div>
-                </div>
-                <div>
-                    <label for="content">내용</label>
-                    <div id="content" th:field="${post.content}" th:text="${post.content}"></div>
-                </div>
-                <hr class="my-4">
-            </th:block>
-            <th:block th:unless="${post}">
-                <div type="text" class="alert-warning" th:text="#{post.nonexistence}" ></div>
-            </th:block>
-            <a th:if="${user}" th:replace="fragments/board :: submitButton" />
-            <table th:replace="fragments/board :: board(board=${board}, page=${pagingList.number+1}, id=${id})" />
+            <div class="my-post">
+                <th:block th:if="${post}">
+                    <div>
+                        <label for="title">제목</label>
+                        <div type="text" id="title" th:field="${post.title}" th:text="${post.title}" ></div>
+                    </div>
+                    <div>
+                        <label for="content">내용</label>
+                        <div id="content" th:field="${post.content}" th:text="${post.content}"></div>
+                    </div>
+                    <hr class="my-4">
+                </th:block>
+                <th:block th:unless="${post}">
+                    <div type="text" class="alert-warning" th:text="#{post.nonexistence}" ></div>
+                </th:block>
+            </div>
+            <div class="my-table">
+                <a th:if="${user}" th:replace="fragments/board :: submitButton" />
+                <div th:replace="fragments/board :: board(board=${board}, page=${pagingList.number+1}, id=${id})"/>
+            </div>
         </div>
     </div>
     <nav th:replace="fragments/boardPagination :: boardPagination(list=${pagingList}, url=${url})" />
