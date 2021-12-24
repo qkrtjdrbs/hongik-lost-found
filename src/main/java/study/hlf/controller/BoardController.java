@@ -42,6 +42,7 @@ public class BoardController {
             @SessionAttribute(required = false, name = Const.LOGIN_USER) User loginUser
     ){
         if(bindingResult.hasErrors()){
+            log.info("에러 : {}", bindingResult.getFieldError());
             return "submit";
         }
         Long boardId = boardService.writeBoard(loginUser.getId(), form);
