@@ -14,7 +14,7 @@
                     </div>
                     <div>
                         <label for="content">내용</label>
-                        <div id="content" th:field="${post.content}" th:text="${post.content}"></div>
+                        <div id="content" th:field="${post.content}" th:utext="${post.content}"></div>
                     </div>
                     <div th:if="${user}" class="btn-group-lg">
                         <div th:if="${post.user.id}==${user.id}">
