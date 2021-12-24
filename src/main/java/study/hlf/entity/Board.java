@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import study.hlf.dto.SubmitDto;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -26,6 +28,10 @@ public class Board extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToMany(mappedBy = "board")
+    private List<Comment> comments = new ArrayList<>();
+
+    @Enumerated(value = EnumType.STRING)
     private BoardStatus status;
 
     public Board(SubmitDto form, User user){
