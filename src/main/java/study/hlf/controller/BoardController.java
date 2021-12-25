@@ -91,9 +91,6 @@ public class BoardController {
         model.addAttribute("board", board);
         model.addAttribute("pagingList", pagingBoard);
         model.addAttribute("user", user);
-        if(user != null){
-            model.addAttribute("comment", new CommentFormDto(user.getId(), id, ""));
-        }
 
         return "post";
     }

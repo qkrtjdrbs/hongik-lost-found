@@ -28,15 +28,12 @@
                     </div>
                     <hr class="my-4">
                     <div th:if="${user}">
-                        <form method="post" action="/comment/write" th:object="${comment}">
-                            <input type="hidden" th:field="*{user_id}" />
-                            <input type="hidden" th:field="*{board_id}" />
-                            <input type="hidden" th:field="${pagingList}" />
+                        <form class="form-group">
                             <textarea class="form-control mb-2"
-                                      th:placeholder="#{comment.placeholder}"
-                                      th:errorclass="field-error"
-                                      th:field="*{content}"></textarea>
-                            <button type="submit" class="btn btn-success">댓글</button>
+                                      id="my-content"
+                                      th:placeholder="#{comment.placeholder}"></textarea>
+                            <button type="button"
+                                    th:onclick="|writeComment('${user.id}', '${post.id}')|" class="btn btn-success">댓글</button>
                         </form>
                     </div>
                 </th:block>
@@ -53,4 +50,39 @@
     <nav th:replace="fragments/boardPagination :: boardPagination(list=${pagingList}, url=${url})" />
 </div>
 </body>
+<script type="text/javascript">
+    function writeComment(user_id, board_id) {
+        var content = document.getElementById("my-content");
+        if (content.value.length === 0) {
+            alert("댓글 내용을 작성해주세요.");
+            content.focus();
+            return false;
+        }
+
+        var url = "/comment/write"
+        var headers = {"Content-Type": "application/json", "X-HTTP-Method-Override": "POST"};
+        var params = {"board_id": board_id, "content": content.value, "user_id": user_id};
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            headers: headers,
+            dataType: "text",
+            data: JSON.stringify(params),
+            success: function(response) {
+                if (response.result == false) {
+                    alert("댓글 등록에 실패하였습니다.");
+                    return false;
+                }
+                // printCommentList();
+                content.value = "";
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+                alert("에러가 발생하였습니다.");
+                return false;
+            }
+        });
+    }
+</script>
 </html>
