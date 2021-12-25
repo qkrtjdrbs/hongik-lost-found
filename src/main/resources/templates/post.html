@@ -27,6 +27,18 @@
                         </div>
                     </div>
                     <hr class="my-4">
+                    <div th:if="${user}">
+                        <form method="post" action="/comment/write" th:object="${comment}">
+                            <input type="hidden" th:field="*{user_id}" />
+                            <input type="hidden" th:field="*{board_id}" />
+                            <input type="hidden" th:field="${pagingList}" />
+                            <textarea class="form-control mb-2"
+                                      th:placeholder="#{comment.placeholder}"
+                                      th:errorclass="field-error"
+                                      th:field="*{content}"></textarea>
+                            <button type="submit" class="btn btn-success">댓글</button>
+                        </form>
+                    </div>
                 </th:block>
                 <th:block th:unless="${post}">
                     <div type="text" class="alert-warning" th:text="#{post.nonexistence}" ></div>

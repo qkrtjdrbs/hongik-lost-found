@@ -3,6 +3,7 @@ package study.hlf.entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import study.hlf.dto.CommentFormDto;
 
 import javax.persistence.*;
 
@@ -29,6 +30,13 @@ public class Comment extends BaseTimeEntity {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
+
+    public Comment(CommentFormDto form, User user, Board board){
+        this.content = form.getContent();
+        this.status = CommentStatus.NO_CHILD;
+        addUser(user);
+        addBoard(board);
+    }
 
     //==연관관계 설정 메소드==//
     public void addUser(User user){

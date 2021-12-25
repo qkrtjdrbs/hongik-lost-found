@@ -8,10 +8,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import study.hlf.Const;
+import study.hlf.dto.CommentFormDto;
 import study.hlf.dto.SubmitDto;
 import study.hlf.entity.Board;
 import study.hlf.entity.User;
@@ -47,7 +47,7 @@ public class BoardController {
         }
         Long boardId = boardService.writeBoard(loginUser.getId(), form);
         if(boardId == null){
-            bindingResult.reject("submitFail", "서버 오류로 글 저장에 실패했습니다.");
+            bindingResult.reject("submitPostFail");
             return "submit";
         }
         return "redirect:/board";
@@ -91,6 +91,9 @@ public class BoardController {
         model.addAttribute("board", board);
         model.addAttribute("pagingList", pagingBoard);
         model.addAttribute("user", user);
+        if(user != null){
+            model.addAttribute("comment", new CommentFormDto(user.getId(), id, ""));
+        }
 
         return "post";
     }
