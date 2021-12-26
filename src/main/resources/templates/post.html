@@ -26,16 +26,42 @@
                             </a>
                         </div>
                     </div>
+
                     <hr class="my-4">
-                    <div th:if="${user}">
-                        <form class="form-group">
-                            <textarea class="form-control mb-2"
-                                      id="my-content"
-                                      th:placeholder="#{comment.placeholder}"></textarea>
-                            <button type="button"
-                                    th:onclick="|writeComment('${user.id}', '${post.id}')|" class="btn btn-success">댓글</button>
-                        </form>
+
+                    <div class="card mb-2" th:each="comment : ${post.comments}">
+                        <div class="card-header bg-light d-flex justify-content-between">
+                            <div th:text="${comment.user.username}"></div>
+                            <div th:text="${{comment.createdDate}}"></div>
+                        </div>
+                        <div class="card-body">
+                            <div th:text="${comment.content}"></div>
+                        </div>
                     </div>
+
+                    <th:block th:if="${user}">
+                        <div class="card mb-2">
+                            <div class="card-header bg-light">
+                                댓글 작성
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">
+                                        <div class="form-inline mb-2">
+                                            <i class="fa fa-user-circle-o fa-2x"></i>
+                                        </div>
+                                        <form class="form-group">
+                                            <textarea class="form-control mb-2"
+                                                      id="my-content"
+                                                      th:placeholder="#{comment.placeholder}"></textarea>
+                                            <button type="button"
+                                                    th:onclick="|writeComment('${user.id}', '${post.id}')|" class="btn btn-success">댓글</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </th:block>
                 </th:block>
                 <th:block th:unless="${post}">
                     <div type="text" class="alert-warning" th:text="#{post.nonexistence}" ></div>
