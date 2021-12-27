@@ -39,6 +39,10 @@
                         </div>
                     </div>
 
+                    <span class="badge badge-pill badge-primary mb-2"
+                          th:text="'댓글 '+${post.comments.size()}">
+                    </span>
+
                     <th:block th:if="${user}">
                         <div class="card mb-2">
                             <div class="card-header bg-light">

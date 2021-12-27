@@ -14,6 +14,7 @@ import study.hlf.Const;
 import study.hlf.dto.CommentFormDto;
 import study.hlf.dto.SubmitDto;
 import study.hlf.entity.Board;
+import study.hlf.entity.Comment;
 import study.hlf.entity.User;
 import study.hlf.repository.BoardSearch;
 import study.hlf.service.BoardService;

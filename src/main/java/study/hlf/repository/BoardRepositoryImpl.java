@@ -10,11 +10,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import study.hlf.entity.Board;
 import study.hlf.entity.BoardStatus;
+import study.hlf.entity.QComment;
 
 import java.util.List;
 
 import static org.springframework.util.StringUtils.*;
 import static study.hlf.entity.QBoard.*;
+import static study.hlf.entity.QComment.*;
 import static study.hlf.entity.QUser.*;
 
 @RequiredArgsConstructor
@@ -34,6 +36,8 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom{
         List<Board> content = queryFactory
                 .selectFrom(board)
                 .innerJoin(board.user, user)
+                .fetchJoin()
+                .leftJoin(board.comments, comment)
                 .fetchJoin()
                 .where(usernameEq(condition.getUsername()),
                         titleContains(condition.getTitle()),
