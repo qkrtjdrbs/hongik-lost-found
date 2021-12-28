@@ -60,7 +60,7 @@
                                         <form class="form-group">
                                             <textarea class="form-control mb-2"
                                                       style="height: 130px"
-                                                      id="my-content"
+                                                      id="comment-content"
                                                       th:placeholder="#{comment.placeholder}"></textarea>
                                             <button type="button"
                                                     th:onclick="|writeComment('${user.id}', '${post.id}')|"
@@ -87,7 +87,7 @@
 </body>
 <script type="text/javascript">
     function writeComment(user_id, board_id) {
-        var content = document.getElementById("my-content");
+        var content = document.getElementById("comment-content");
         if (content.value.length === 0) {
             alert("댓글 내용을 작성해주세요.");
             content.focus();
