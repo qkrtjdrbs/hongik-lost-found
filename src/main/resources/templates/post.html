@@ -8,20 +8,23 @@
             <nav th:replace="fragments/navs/nav :: nav(user=${user})" />
             <div class="my-post">
                 <th:block th:if="${post}">
-                    <div>
-                        <label for="title">제목</label>
-                        <div type="text" id="title" th:field="${post.title}" th:text="${post.title}" ></div>
+                    <div class="row justify-content-between align-items-center m-0 mb-2">
+                        <h4 class="m-0" th:field="${post.title}" th:text="${post.title}"></h4>
+                        <span th:text="${{post.createdDate}}"></span>
                     </div>
-                    <div>
-                        <label for="content">내용</label>
-                        <div id="content" th:field="${post.content}" th:utext="${post.content}"></div>
+                    <div class="w-100 row m-0 justify-content-end" th:text="${post.user.username}"></div>
+
+                    <hr class="my-4">
+
+                    <div class="mb-4">
+                        <div th:field="${post.content}" th:utext="${post.content}"></div>
                     </div>
                     <div th:if="${user}" class="btn-group-lg">
                         <div th:if="${post.user.id}==${user.id}">
-                            <a class="m-2" href="#">
+                            <a href="#">
                                 <div class="btn btn-info">임시 수정 버튼</div>
                             </a>
-                            <a class="m-2" href="#">
+                            <a href="#">
                                 <div class="btn btn-danger">임시 삭제 버튼</div>
                             </a>
                         </div>
@@ -56,10 +59,12 @@
                                         </div>
                                         <form class="form-group">
                                             <textarea class="form-control mb-2"
+                                                      style="height: 130px"
                                                       id="my-content"
                                                       th:placeholder="#{comment.placeholder}"></textarea>
                                             <button type="button"
-                                                    th:onclick="|writeComment('${user.id}', '${post.id}')|" class="btn btn-success">댓글</button>
+                                                    th:onclick="|writeComment('${user.id}', '${post.id}')|"
+                                                    class="btn btn-success float-right">댓글</button>
                                         </form>
                                     </li>
                                 </ul>
