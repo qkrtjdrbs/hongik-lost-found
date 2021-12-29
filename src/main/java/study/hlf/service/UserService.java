@@ -30,6 +30,11 @@ public class UserService {
         return userRepository.save(new User(user)).getId();
     }
 
+    public User findUserById(Long id){
+        Optional<User> findUser = userRepository.findById(id);
+        return findUser.orElse(null);
+    }
+
     public Optional<User> findByUsername(String username){
         return userRepository.findByUsername(username);
     }

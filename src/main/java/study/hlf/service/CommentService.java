@@ -11,6 +11,8 @@ import study.hlf.repository.BoardRepository;
 import study.hlf.repository.CommentRepository;
 import study.hlf.repository.UserRepository;
 
+import java.lang.reflect.Array;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,5 +33,13 @@ public class CommentService {
         }
         Comment comment = new Comment(form, user.get(), board.get());
         return commentRepository.save(comment).getId();
+    }
+
+    public List<Comment> findBoardComments(Long boardId){
+        Optional<Board> findBoard = boardRepository.findById(boardId);
+        if(findBoard.isEmpty()){
+            return List.of(null);
+        }
+        return findBoard.get().getComments();
     }
 }

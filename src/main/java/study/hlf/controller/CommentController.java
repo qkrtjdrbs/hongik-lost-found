@@ -1,30 +1,38 @@
 package study.hlf.controller;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import study.hlf.dto.CommentDto;
 import study.hlf.dto.CommentFormDto;
 import study.hlf.service.CommentService;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/comment")
 @RequiredArgsConstructor
-@Slf4j
 public class CommentController {
 
     private final CommentService commentService;
 
     @PostMapping("/write")
     public String save(@RequestBody CommentFormDto form,
-                       HttpServletRequest request){
+                       Model model){
         Long id = commentService.writeComment(form);
         if(id == null){
             throw new RuntimeException();
         }
-        String referer = request.getHeader("referer");
-        return "redirect:" + referer;
+
+        List<CommentDto> result = commentService.findBoardComments(form.getBoard_id())
+                .stream().map((comment) -> new CommentDto(comment.getUser().getUsername(),
+                        comment.getContent(), comment.getCreatedDate()))
+                .collect(Collectors.toList());
+
+        model.addAttribute("comments", result);
+
+        return "fragments/comments";
     }
 }

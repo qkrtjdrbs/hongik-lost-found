@@ -32,17 +32,20 @@
 
                     <hr class="my-4">
 
-                    <div class="card mb-2" th:each="comment : ${post.comments}">
-                        <div class="card-header bg-light d-flex justify-content-between">
-                            <div th:text="${comment.user.username}"></div>
-                            <div th:text="${{comment.createdDate}}"></div>
-                        </div>
-                        <div class="card-body">
-                            <div th:text="${comment.content}"></div>
+                    <div id="commentTable">
+                        <div class="card mb-2" th:each="comment : ${post.comments}">
+                            <div class="card-header bg-light d-flex justify-content-between">
+                                <div th:text="${comment.user.username}"></div>
+                                <div th:text="${{comment.createdDate}}"></div>
+                            </div>
+                            <div class="card-body">
+                                <div th:text="${comment.content}"></div>
+                            </div>
                         </div>
                     </div>
 
                     <span class="badge badge-pill badge-primary mb-2"
+                          id="commentCount"
                           th:text="'댓글 '+${post.comments.size()}">
                     </span>
 
@@ -60,7 +63,7 @@
                                         <form class="form-group">
                                             <textarea class="form-control mb-2"
                                                       style="height: 130px"
-                                                      id="comment-content"
+                                                      id="commentContent"
                                                       th:placeholder="#{comment.placeholder}"></textarea>
                                             <button type="button"
                                                     th:onclick="|writeComment('${user.id}', '${post.id}')|"
@@ -87,7 +90,7 @@
 </body>
 <script type="text/javascript">
     function writeComment(user_id, board_id) {
-        var content = document.getElementById("comment-content");
+        var content = document.getElementById("commentContent");
         if (content.value.length === 0) {
             alert("댓글 내용을 작성해주세요.");
             content.focus();
@@ -109,8 +112,11 @@
                     alert("댓글 등록에 실패하였습니다.");
                     return false;
                 }
-                // printCommentList();
+                $('#commentTable').replaceWith(response);
                 content.value = "";
+                var count = document.getElementById("commentCount").innerText;
+                count = count.substr(3);
+                document.getElementById("commentCount").innerText = "댓글 " + (parseInt(count)+1).toString();
             },
             error: function(xhr, status, error) {
                 console.error(error);

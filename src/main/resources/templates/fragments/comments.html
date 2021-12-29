@@ -1,0 +1,14 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<div id="commentTable">
+    <div class="card mb-2" th:each="comment : ${comments}">
+        <div class="card-header bg-light d-flex justify-content-between">
+            <div th:text="${comment.username}"></div>
+            <div th:text="${{comment.createdDate}}"></div>
+        </div>
+        <div class="card-body">
+            <div th:text="${comment.content}"></div>
+        </div>
+    </div>
+</div>
+</html>
