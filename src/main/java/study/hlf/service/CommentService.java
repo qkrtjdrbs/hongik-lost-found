@@ -25,14 +25,14 @@ public class CommentService {
     private final CommentRepository commentRepository;
 
     @Transactional
-    public Long writeComment(CommentFormDto form){
+    public Comment writeComment(CommentFormDto form){
         Optional<User> user = userRepository.findById(form.getUser_id());
         Optional<Board> board = boardRepository.findById(form.getBoard_id());
         if(user.isEmpty() || board.isEmpty()){
             return null;
         }
         Comment comment = new Comment(form, user.get(), board.get());
-        return commentRepository.save(comment).getId();
+        return commentRepository.save(comment);
     }
 
     public List<Comment> findBoardComments(Long boardId){

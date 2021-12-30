@@ -112,7 +112,7 @@
                     alert("댓글 등록에 실패하였습니다.");
                     return false;
                 }
-                $('#commentTable').replaceWith(response);
+                $('#commentTable').append(response);
                 content.value = "";
                 var count = document.getElementById("commentCount").innerText;
                 count = count.substr(3);

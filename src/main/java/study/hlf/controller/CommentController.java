@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import study.hlf.dto.CommentDto;
 import study.hlf.dto.CommentFormDto;
+import study.hlf.entity.Comment;
 import study.hlf.service.CommentService;
 
 import java.util.List;
@@ -21,18 +22,13 @@ public class CommentController {
     @PostMapping("/write")
     public String save(@RequestBody CommentFormDto form,
                        Model model){
-        Long id = commentService.writeComment(form);
-        if(id == null){
+        Comment comment = commentService.writeComment(form);
+        if(comment == null){
             throw new RuntimeException();
         }
 
-        List<CommentDto> result = commentService.findBoardComments(form.getBoard_id())
-                .stream().map((comment) -> new CommentDto(comment.getUser().getUsername(),
-                        comment.getContent(), comment.getCreatedDate()))
-                .collect(Collectors.toList());
+        model.addAttribute("comment", comment);
 
-        model.addAttribute("comments", result);
-
-        return "fragments/comments";
+        return "fragments/comment";
     }
 }
