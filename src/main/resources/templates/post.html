@@ -33,14 +33,8 @@
                     <hr class="my-4">
 
                     <div id="commentTable">
-                        <div class="card mb-2" th:each="comment : ${post.comments}">
-                            <div class="card-header bg-light d-flex justify-content-between">
-                                <div th:text="${comment.user.username}"></div>
-                                <div th:text="${{comment.createdDate}}"></div>
-                            </div>
-                            <div class="card-body">
-                                <div th:text="${comment.content}"></div>
-                            </div>
+                        <div th:each="comment : ${post.comments}">
+                            <div th:replace="fragments/comment :: comment(comment=${comment})" />
                         </div>
                     </div>
 

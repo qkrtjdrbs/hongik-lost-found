@@ -1,12 +1,19 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<div class="card mb-2">
+<div th:fragment="comment(comment)" class="card mb-2">
     <div class="card-header bg-light d-flex justify-content-between">
         <div th:text="${comment.user.username}"></div>
         <div th:text="${{comment.createdDate}}"></div>
     </div>
     <div class="card-body">
-        <div th:text="${comment.content}"></div>
+        <div th:text="${comment.content}" class="mb-5"></div>
+        <div th:if="${user}">
+            <a href="#" style="color: #218838">답글</a>
+            <th:block th:if="${comment.user.id}==${user.id}">
+                <a href="#">수정</a>
+                <a href="#" style="color: #dc3545">삭제</a>
+            </th:block>
+        </div>
     </div>
 </div>
 </html>
