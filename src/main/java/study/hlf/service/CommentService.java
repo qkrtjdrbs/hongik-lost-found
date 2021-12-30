@@ -3,6 +3,7 @@ package study.hlf.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import study.hlf.dto.CommentDeleteDto;
 import study.hlf.dto.CommentFormDto;
 import study.hlf.entity.Board;
 import study.hlf.entity.Comment;
@@ -41,5 +42,16 @@ public class CommentService {
             return List.of(null);
         }
         return findBoard.get().getComments();
+    }
+
+    @Transactional
+    public boolean deleteComment(Long id){
+        try {
+            commentRepository.deleteById(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }

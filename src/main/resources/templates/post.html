@@ -34,7 +34,22 @@
 
                     <div id="commentTable">
                         <div th:each="comment : ${post.comments}">
-                            <div th:replace="fragments/comment :: comment(comment=${comment})" />
+                            <div class="card mb-2" th:id="${comment.id}"}>
+                                <div class="card-header bg-light d-flex justify-content-between">
+                                    <div th:text="${comment.user.username}"></div>
+                                    <div th:text="${{comment.createdDate}}"></div>
+                                </div>
+                                <div class="card-body">
+                                    <div th:text="${comment.content}" class="mb-5"></div>
+                                    <div th:if="${user}">
+                                        <a href="#" style="color: #218838">답글</a>
+                                        <th:block th:if="${comment.user.id}==${user.id}">
+                                            <a href="#">수정</a>
+                                            <a href="#" th:onclick="|deleteComment(${comment.id}, ${comment.user.id})|" style="color: #dc3545">삭제</a>
+                                        </th:block>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -118,6 +133,50 @@
                 return false;
             }
         });
+    }
+</script>
+<script type="text/javascript">
+    function deleteComment(commentId, userId) {
+
+        if(!confirm("댓글을 삭제하시겠습니까?")){
+            return false;
+        }
+
+        var url = "/comment/"+ commentId +"/delete";
+        var headers = {"Content-Type": "application/json; charset=utf-8", "X-HTTP-Method-Override": "POST"};
+        var params = {"commentId": commentId, "userId": userId};
+
+        $.ajax({
+            url: url,
+            headers: headers,
+            type: 'POST',
+            dataType: 'text',
+            data: JSON.stringify(params),
+            /*success: function(response) {
+                console.log(response);
+                if (response.result == false) {
+                    alert("댓글 삭제에 실패하였습니다.");
+                    return false;
+                }
+                var count = document.getElementById("commentCount").innerText;
+                count = count.substr(3);
+                document.getElementById("commentCount").innerText = "댓글 " + (parseInt(count)-1).toString();
+            },
+            error: function(xhr, status, error) {
+                console.error(xhr, status, error);
+                alert("에러가 발생하였습니다.");
+                return false;
+            }*/
+        }).done(function (data, textStatus, xhr) {
+            if(xhr.status == 200){
+                $("#"+commentId).remove();
+                var count = document.getElementById("commentCount").innerText;
+                count = count.substr(3);
+                document.getElementById("commentCount").innerText = "댓글 " + (parseInt(count)-1).toString();
+            } else {
+                alert("서버 오류로 삭제에 실패했습니다.");
+            }
+        })
     }
 </script>
 </html>
