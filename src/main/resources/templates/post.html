@@ -151,22 +151,7 @@
             headers: headers,
             type: 'POST',
             dataType: 'text',
-            data: JSON.stringify(params),
-            /*success: function(response) {
-                console.log(response);
-                if (response.result == false) {
-                    alert("댓글 삭제에 실패하였습니다.");
-                    return false;
-                }
-                var count = document.getElementById("commentCount").innerText;
-                count = count.substr(3);
-                document.getElementById("commentCount").innerText = "댓글 " + (parseInt(count)-1).toString();
-            },
-            error: function(xhr, status, error) {
-                console.error(xhr, status, error);
-                alert("에러가 발생하였습니다.");
-                return false;
-            }*/
+            data: JSON.stringify(params)
         }).done(function (data, textStatus, xhr) {
             if(xhr.status == 200){
                 $("#"+commentId).remove();
