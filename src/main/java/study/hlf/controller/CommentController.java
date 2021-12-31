@@ -1,6 +1,7 @@
 package study.hlf.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,11 +16,10 @@ import study.hlf.entity.Comment;
 import study.hlf.entity.User;
 import study.hlf.service.CommentService;
 
-import java.nio.charset.StandardCharsets;
-
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class CommentController {
 
     private final CommentService commentService;
@@ -28,6 +28,10 @@ public class CommentController {
     public String save(@RequestBody CommentFormDto form,
                        Model model,
                        @SessionAttribute(name = Const.LOGIN_USER, required = false) User loginUser){
+        if(loginUser == null || loginUser.getId() != form.getUser_id()){
+            log.info("권한 없음");
+            throw new IllegalArgumentException();
+        }
         Comment comment = commentService.writeComment(form);
         if(comment == null){
             throw new RuntimeException();
@@ -45,12 +49,10 @@ public class CommentController {
     @ResponseBody
     public ResponseEntity delete(@RequestBody CommentDeleteDto dto,
                                  @SessionAttribute(name = Const.LOGIN_USER, required = false) User loginUser){
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
         if(loginUser == null || loginUser.getId() != dto.getUserId()){
-            return new ResponseEntity<>(headers, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         boolean deleted = commentService.deleteComment(dto.getCommentId());
-        return (deleted ? new ResponseEntity<>(headers, HttpStatus.OK) : new ResponseEntity<>(headers, HttpStatus.INTERNAL_SERVER_ERROR));
+        return (deleted ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 }
