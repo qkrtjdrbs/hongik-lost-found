@@ -29,11 +29,19 @@ public class BoardService {
         return boardRepository.save(board).getId();
     }
 
-    @Transactional
     public Board findOneById(Long id){
         Optional<Board> findPost = boardRepository.findById(id);
         findPost.ifPresent(Board::addHit);
         return findPost.orElse(null);
+    }
+
+    @Transactional
+    public void deletePost(Long postId){
+        try{
+            boardRepository.deleteById(postId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /*public Page<Board> findBoard(Pageable pageable){

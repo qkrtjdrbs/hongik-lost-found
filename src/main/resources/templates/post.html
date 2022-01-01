@@ -21,12 +21,10 @@
                     </div>
                     <div th:if="${user}" class="btn-group-lg">
                         <div th:if="${post.user.id}==${user.id}">
-                            <a href="#">
+                            <a th:href="|/board/${post.id}/edit|">
                                 <div class="btn btn-info">임시 수정 버튼</div>
                             </a>
-                            <a href="#">
-                                <div class="btn btn-danger">임시 삭제 버튼</div>
-                            </a>
+                            <div class="btn btn-danger" th:onclick="|deletePost(${post.id}, ${post.user.id})|" >삭제</div>
                         </div>
                     </div>
 
@@ -97,6 +95,7 @@
     <nav th:replace="fragments/boardPagination :: boardPagination(list=${pagingList}, url=${url})" />
 </div>
 </body>
+<!--댓글 작성 자바스크립트 코드-->
 <script type="text/javascript">
     function writeComment(user_id, board_id) {
         var content = document.getElementById("commentContent");
@@ -135,6 +134,7 @@
         });
     }
 </script>
+<!--댓글 삭제 자바스크립트 코드-->
 <script type="text/javascript">
     function deleteComment(commentId, userId) {
 
@@ -158,6 +158,34 @@
                 var count = document.getElementById("commentCount").innerText;
                 count = count.substr(3);
                 document.getElementById("commentCount").innerText = "댓글 " + (parseInt(count)-1).toString();
+            } else {
+                alert("서버 오류로 삭제에 실패했습니다.");
+            }
+        })
+    }
+</script>
+<!--게시물 삭제 자바스크립트 코드-->
+<script type="text/javascript">
+    function deletePost(postId, userId) {
+
+        if(!confirm("게시물을 삭제하시겠습니까?")){
+            return false;
+        }
+
+        var url = "/board/"+ postId +"/delete";
+        var headers = {"Content-Type": "application/json; charset=utf-8", "X-HTTP-Method-Override": "POST"};
+        var params = {"postId": postId, "userId": userId};
+
+        $.ajax({
+            url: url,
+            headers: headers,
+            type: 'POST',
+            dataType: 'text',
+            data: JSON.stringify(params)
+        }).done(function (data, textStatus, xhr) {
+            if(xhr.status == 200){
+               alert("게시물을 삭제했습니다.");
+               location.href = '/board';
             } else {
                 alert("서버 오류로 삭제에 실패했습니다.");
             }

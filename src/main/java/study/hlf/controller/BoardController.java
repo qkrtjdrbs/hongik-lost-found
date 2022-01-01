@@ -6,12 +6,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import study.hlf.Const;
 import study.hlf.dto.CommentFormDto;
+import study.hlf.dto.PostDeleteDto;
 import study.hlf.dto.SubmitDto;
 import study.hlf.entity.Board;
 import study.hlf.entity.Comment;
@@ -94,6 +97,16 @@ public class BoardController {
         model.addAttribute("user", user);
 
         return "post";
+    }
+
+    @PostMapping("/board/{id}/delete")
+    public ResponseEntity delete(@RequestBody PostDeleteDto dto,
+                                 @SessionAttribute(required = false, name = Const.LOGIN_USER) User loginUser){
+        if(loginUser == null || loginUser.getId() != dto.getUserId()){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        boardService.deletePost(dto.getPostId());
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     private String requestURL(BoardSearch boardSearch) {
