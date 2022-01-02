@@ -19,6 +19,7 @@ import study.hlf.dto.SubmitDto;
 import study.hlf.entity.Board;
 import study.hlf.entity.Comment;
 import study.hlf.entity.User;
+import study.hlf.exception.NotAuthorizedException;
 import study.hlf.repository.BoardSearch;
 import study.hlf.service.BoardService;
 
@@ -54,7 +55,7 @@ public class BoardController {
             bindingResult.reject("submitPostFail");
             return "submit";
         }
-        return "redirect:/board";
+        return "redirect:/board/" + boardId;
     }
 
     @GetMapping("/board")
@@ -102,11 +103,36 @@ public class BoardController {
     @PostMapping("/board/{id}/delete")
     public ResponseEntity delete(@RequestBody PostDeleteDto dto,
                                  @SessionAttribute(required = false, name = Const.LOGIN_USER) User loginUser){
-        if(loginUser == null || loginUser.getId() != dto.getUserId()){
+        if(loginUser.getId() != dto.getUserId()){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
         boardService.deletePost(dto.getPostId());
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @GetMapping("/board/{id}/edit")
+    public String edit(@PathVariable Long id,
+                       Model model,
+                       @SessionAttribute(required = false, name = Const.LOGIN_USER) User loginUser){
+        Board post = boardService.findOneById(id);
+        if(post.getUser().getId() != loginUser.getId()){
+            throw new NotAuthorizedException();
+        }
+        model.addAttribute("form", new SubmitDto(post.getTitle(), post.getContent()));
+        return "submit";
+    }
+
+    @PostMapping("/board/{id}/edit")
+    public String edit(@PathVariable Long id,
+                       @Valid @ModelAttribute(name = "form") SubmitDto form,
+                       BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return "submit";
+        }
+
+        boardService.editPost(id, form);
+
+        return "redirect:/board/" + id;
     }
 
     private String requestURL(BoardSearch boardSearch) {

@@ -29,6 +29,19 @@ public class BoardService {
         return boardRepository.save(board).getId();
     }
 
+    @Transactional
+    public void editPost(Long id, SubmitDto form){
+        try {
+            Board post = this.findOneById(id);
+            post.changeTitle(form.getTitle());
+            post.changeContent(form.getContent());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
+    }
+
+    @Transactional
     public Board findOneById(Long id){
         Optional<Board> findPost = boardRepository.findById(id);
         findPost.ifPresent(Board::addHit);

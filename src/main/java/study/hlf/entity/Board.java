@@ -52,4 +52,12 @@ public class Board extends BaseTimeEntity {
     public void addHit(){
         this.hits++;
     }
+
+    public void changeTitle(String title){
+        this.title = title;
+    }
+
+    public void changeContent(String content){
+        this.content = content;
+    }
 }
