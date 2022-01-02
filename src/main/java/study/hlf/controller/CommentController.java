@@ -12,6 +12,7 @@ import study.hlf.dto.CommentDeleteDto;
 import study.hlf.dto.CommentFormDto;
 import study.hlf.entity.Comment;
 import study.hlf.entity.User;
+import study.hlf.exception.NotAuthorizedException;
 import study.hlf.service.CommentService;
 
 
@@ -28,8 +29,9 @@ public class CommentController {
                        @SessionAttribute(name = Const.LOGIN_USER, required = false) User loginUser){
         if(loginUser == null || loginUser.getId() != form.getUser_id()){
             log.info("권한 없음");
-            throw new IllegalArgumentException();
+            throw new NotAuthorizedException();
         }
+
         Comment comment = commentService.writeComment(form);
         if(comment == null){
             throw new RuntimeException();
@@ -44,7 +46,6 @@ public class CommentController {
     }
 
     @PostMapping("/comment/{id}/delete")
-    @ResponseBody
     public ResponseEntity delete(@RequestBody CommentDeleteDto dto,
                                  @SessionAttribute(name = Const.LOGIN_USER, required = false) User loginUser){
         if(loginUser == null || loginUser.getId() != dto.getUserId()){
