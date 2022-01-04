@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import study.hlf.Const;
 import study.hlf.dto.CommentDeleteDto;
+import study.hlf.dto.CommentEditDto;
 import study.hlf.dto.CommentFormDto;
 import study.hlf.entity.Comment;
 import study.hlf.entity.User;
@@ -38,6 +39,7 @@ public class CommentController {
         }
 
         model.addAttribute("comment", comment);
+        model.addAttribute("postId", form.getBoard_id());
         if(loginUser != null){
             model.addAttribute("user", loginUser);
         }
@@ -53,5 +55,15 @@ public class CommentController {
         }
         boolean deleted = commentService.deleteComment(dto.getCommentId());
         return (deleted ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+    }
+
+    @PostMapping("/comment/{id}/edit")
+    public ResponseEntity edit(@RequestBody CommentEditDto dto,
+                                 @SessionAttribute(name = Const.LOGIN_USER, required = false) User loginUser){
+        if(loginUser == null || loginUser.getId() != dto.getUser_id()){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        boolean edited = commentService.editComment(dto.getComment_id(), dto.getContent());
+        return (edited ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 }

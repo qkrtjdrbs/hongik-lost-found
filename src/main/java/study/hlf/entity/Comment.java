@@ -48,4 +48,9 @@ public class Comment extends BaseTimeEntity {
         this.board = board;
         board.getComments().add(this);
     }
+
+    //==비즈니스 메소드==//
+    public void changeContent(String content){
+        this.content = content;
+    }
 }

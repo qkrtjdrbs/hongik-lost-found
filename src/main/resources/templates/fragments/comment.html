@@ -1,19 +1,32 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<div class="card mb-2" th:id="${comment.id}"}>
+<th:block th:fragment="showComment(comment, postId)">
+<div class="card mb-2" th:id="'comment'+${comment.id}"}>
     <div class="card-header bg-light d-flex justify-content-between">
         <div th:text="${comment.user.username}"></div>
         <div th:text="${{comment.createdDate}}"></div>
     </div>
     <div class="card-body">
-        <div th:text="${comment.content}" class="mb-5"></div>
+        <div th:text="${comment.content}" th:id="'comment-content'+${comment.id}" class="mb-5 collapse show"></div>
+        <form class="mb-5 form-group collapse" th:id="'editForm'+${comment.id}">
+            <textarea class="form-control mb-2"
+                      style="height: 130px"
+                      th:id="'editContent'+${comment.id}"
+                      th:text="${comment.content}"
+                      th:placeholder="#{comment.placeholder}"></textarea>
+            <button type="button"
+                    th:onclick="|editComment('${user.id}', '${postId}', '${comment.id}')|"
+                    class="btn btn-success float-right">수정</button>
+        </form>
         <div th:if="${user}">
             <a href="#" style="color: #218838">답글</a>
             <th:block th:if="${comment.user.id}==${user.id}">
-                <a href="#">수정</a>
+                <a href="#" th:id="'comment-edit-btn'+${comment.id}" data-toggle="collapse"
+                   th:attr="data-target='#editForm'+${comment.id}">수정</a>
                 <a href="#" th:onclick="|deleteComment(${comment.id}, ${comment.user.id})|" style="color: #dc3545">삭제</a>
             </th:block>
         </div>
     </div>
 </div>
+</th:block>
 </html>

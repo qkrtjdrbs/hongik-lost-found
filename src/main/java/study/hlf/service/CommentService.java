@@ -54,4 +54,14 @@ public class CommentService {
         }
         return true;
     }
+
+    @Transactional
+    public boolean editComment(Long id, String content) {
+        Optional<Comment> findComment = commentRepository.findById(id);
+        if(findComment.isPresent()){
+            findComment.get().changeContent(content);
+            return true;
+        }
+        return false;
+    }
 }
