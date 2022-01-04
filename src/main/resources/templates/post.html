@@ -8,6 +8,7 @@
             <nav th:replace="fragments/navs/nav :: nav(user=${user})" />
             <div class="my-post">
                 <th:block th:if="${post}">
+                    <!--게시물 헤더-->
                     <div class="row justify-content-between align-items-center m-0 mb-2">
                         <h4 class="m-0" th:field="${post.title}" th:text="${post.title}"></h4>
                         <span th:text="${{post.createdDate}}"></span>
@@ -16,9 +17,12 @@
 
                     <hr class="my-4">
 
+                    <!--게시물 내용-->
                     <div class="mb-4">
                         <div th:field="${post.content}" th:utext="${post.content}"></div>
                     </div>
+
+                    <!--게시물 수정 & 삭제 버튼-->
                     <div th:if="${user}" class="btn-group-lg">
                         <div th:if="${post.user.id}==${user.id}">
                             <a th:href="|/board/${post.id}/edit|" style="text-decoration: none">
@@ -32,17 +36,18 @@
 
                     <hr class="my-4">
 
+                    <!--댓글 개수-->
+                    <span class="badge badge-pill badge-primary mb-2"
+                          id="commentCount"
+                          th:text="'댓글 '+${post.comments.size()}">
+                    </span>
+
                     <!--댓글 보여주기-->
                     <div id="commentTable">
                         <div th:each="comment : ${post.comments}">
                             <div th:replace="fragments/comment :: showComment(comment=${comment}, postId=${post.id})" />
                         </div>
                     </div>
-
-                    <span class="badge badge-pill badge-primary mb-2"
-                          id="commentCount"
-                          th:text="'댓글 '+${post.comments.size()}">
-                    </span>
 
                     <!--댓글 작성 폼-->
                     <th:block th:if="${user}">
@@ -70,7 +75,10 @@
                             </div>
                         </div>
                     </th:block>
+
                 </th:block>
+
+                <!--게시물 없을 경우 안내 메시지 출력-->
                 <th:block th:unless="${post}">
                     <div type="text" class="alert-warning" th:text="#{post.nonexistence}" ></div>
                 </th:block>
