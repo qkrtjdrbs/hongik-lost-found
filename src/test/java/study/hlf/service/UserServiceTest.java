@@ -1,54 +1,100 @@
 package study.hlf.service;
 
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.util.ReflectionTestUtils;
 import study.hlf.dto.LoginDto;
 import study.hlf.dto.SignUpDto;
 import study.hlf.entity.User;
+import study.hlf.repository.UserRepository;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.*;
 
-@SpringBootTest
-class UserServiceTest {
+@ExtendWith(MockitoExtension.class)
+public class UserServiceTest {
 
-    @Autowired UserService userService;
-    @Autowired BCryptPasswordEncoder encoder;
+    @Mock
+    private UserRepository userRepository;
 
-    @BeforeEach
-    void addUser(){
-        SignUpDto user = new SignUpDto("user", "123", "test");
-        userService.save(user);
+    @Mock
+    private BCryptPasswordEncoder encoder;
+
+    @InjectMocks
+    private UserService userService;
+
+    @Test
+    void saveUserTest_success(){
+        SignUpDto dto = new SignUpDto("test1", "123", "a@a.com");
+        User user = new User(dto);
+        ReflectionTestUtils.setField(user, "id", 1L);
+
+        given(userRepository.findByUsername(dto.getUsername())).willReturn(Optional.empty());
+        given(userRepository.save(any())).willReturn(user);
+        given(encoder.encode(dto.getPassword())).willReturn("abc");
+
+        Long saveId = userService.save(dto);
+
+        assertThat(saveId).isEqualTo(1L);
     }
 
     @Test
-    void 회원가입(){
-        Optional<User> user = userService.findByUsername("user");
-        assertThat(user).isNotNull();
-        assertThat(user.get().getId()).isEqualTo(1L);
+    void saveUserTest_fail(){
+        SignUpDto dto = new SignUpDto("test1", "123", "a@a.com");
+        User user = new User(dto);
+        ReflectionTestUtils.setField(user, "id", 1L);
 
-        SignUpDto user2 = new SignUpDto("user", "123e", "testc");
-        Long id = userService.save(user2);
-        assertThat(id).isNull();
+        given(userRepository.findByUsername(dto.getUsername())).willReturn(Optional.of(user));
+
+        Long saveId = userService.save(dto);
+
+        assertThat(saveId).isNull();
     }
 
     @Test
-    void 로그인(){
-        User loginUser = userService.login(new LoginDto("user", "123"));
-        assertThat(loginUser.getUsername()).isEqualTo("user");
+    void loginTest_success(){
+        SignUpDto dto = new SignUpDto("test1", "123", "a@a.com");
+        User user = new User(dto);
+        ReflectionTestUtils.setField(user, "id", 1L);
+        LoginDto loginDto = new LoginDto("test1", "123");
 
-        User wrongPassword = userService.login(new LoginDto("user", "1232"));
-        assertThat(wrongPassword).isNull();
+        given(userRepository.findByUsername(loginDto.getUsername())).willReturn(Optional.of(user));
+        given(encoder.matches(loginDto.getPassword(), user.getPassword())).willReturn(true);
 
-        User notExistUsername = userService.login(new LoginDto("user1", "123"));
-        assertThat(notExistUsername).isNull();
+        User loginUser = userService.login(loginDto);
+
+        assertThat(loginUser.getUsername()).isEqualTo(user.getUsername());
+    }
+
+    @Test
+    void loginTest_wrongPassword(){
+        SignUpDto dto = new SignUpDto("test1", "123", "a@a.com");
+        User user = new User(dto);
+        ReflectionTestUtils.setField(user, "id", 1L);
+        LoginDto loginDto = new LoginDto("test1", "1234");
+
+        given(userRepository.findByUsername(loginDto.getUsername())).willReturn(Optional.of(user));
+        given(encoder.matches(loginDto.getPassword(), user.getPassword())).willReturn(false);
+
+        User loginUser = userService.login(loginDto);
+
+        assertThat(loginUser).isNull();
+    }
+
+    @Test
+    void loginTest_notExistingUser(){
+        LoginDto loginDto = new LoginDto("test1", "1234");
+
+        given(userRepository.findByUsername(loginDto.getUsername())).willReturn(Optional.ofNullable(null));
+
+        User loginUser = userService.login(loginDto);
+
+        assertThat(loginUser).isNull();
     }
 }
