@@ -18,10 +18,20 @@
                     th:onclick="|editComment('${user.id}', '${postId}', '${comment.id}')|"
                     class="btn btn-success float-right">수정</button>
         </form>
+        <form class="mb-5 form-group collapse" th:id="'writeForm'+${comment.id}" style="margin-left: 2%">
+            <textarea class="form-control mb-2"
+                      style="height: 130px"
+                      th:id="'nestedComment'+${comment.id}"
+                      th:placeholder="#{comment.placeholder}"></textarea>
+            <button type="button"
+                    th:onclick="|writeNestedComment('${user.id}', '${postId}', '${comment.id}')|"
+                    class="btn btn-primary float-right">작성</button>
+        </form>
         <div th:if="${user}">
-            <a href="#" style="color: #218838">답글</a>
+            <a href="#" th:id="'comment-edit-btn'+${comment.id}" data-toggle="collapse"
+               th:attr="data-target='#writeForm'+${comment.id}">답글</a>
             <th:block th:if="${comment.user.id}==${user.id}">
-                <a href="#" th:id="'comment-edit-btn'+${comment.id}" data-toggle="collapse"
+                <a href="#" th:id="'comment-edit-btn'+${comment.id}" data-toggle="collapse" style="color: #218838"
                    th:attr="data-target='#editForm'+${comment.id}">수정</a>
                 <a href="#" th:onclick="|deleteComment(${comment.id}, ${comment.user.id})|" style="color: #dc3545">삭제</a>
             </th:block>
