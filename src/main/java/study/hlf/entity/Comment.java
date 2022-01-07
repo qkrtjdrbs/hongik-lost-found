@@ -7,6 +7,9 @@ import study.hlf.dto.CommentFormDto;
 
 import javax.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static javax.persistence.FetchType.*;
 
 @Entity
@@ -31,6 +34,13 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name = "board_id")
     private Board board;
 
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "comment_id")
+    private Comment parent;
+
+    @OneToMany(mappedBy = "parent")
+    private List<Comment> children = new ArrayList<>();
+
     public Comment(CommentFormDto form, User user, Board board){
         this.content = form.getContent();
         this.status = CommentStatus.NO_CHILD;
@@ -47,6 +57,11 @@ public class Comment extends BaseTimeEntity {
     public void addBoard(Board board){
         this.board = board;
         board.getComments().add(this);
+    }
+
+    public void addParent(Comment parent){
+        this.parent = parent;
+        parent.getChildren().add(this);
     }
 
     //==비즈니스 메소드==//
