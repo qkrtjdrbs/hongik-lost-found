@@ -24,6 +24,7 @@ public class Board extends BaseTimeEntity {
     @Lob
     private String content;
 
+    private int commentCount;
     private int hits;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = PERSIST)
@@ -39,6 +40,7 @@ public class Board extends BaseTimeEntity {
     public Board(SubmitDto form, User user){
         this.title = form.getTitle();
         this.content = form.getContent();
+        this.commentCount = 0;
         this.hits = 0;
         this.status = BoardStatus.LOST;
         this.addUser(user);
@@ -53,6 +55,14 @@ public class Board extends BaseTimeEntity {
     //==비즈니스 메소드==//
     public void addHit(){
         this.hits++;
+    }
+
+    public void addCommentCount(){
+        this.commentCount++;
+    }
+
+    public void subCommentCount(){
+        this.commentCount--;
     }
 
     public void changeTitle(String title){

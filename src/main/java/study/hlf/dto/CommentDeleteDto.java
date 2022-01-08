@@ -7,4 +7,5 @@ public class CommentDeleteDto {
 
     private Long commentId;
     private Long userId;
+    private Long postId;
 }

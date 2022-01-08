@@ -1,12 +1,15 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="showComment(comment, postId)">
-<div class="card mb-2" th:id="'comment'+${comment.id}"}>
+<div class="card mb-2" th:id="'comment'+${comment.id}"}
+     th:style="${comment.parent} ? 'margin-left: 2%' : _">
+    <!--부모 댓글 보여주기-->
     <div class="card-header bg-light d-flex justify-content-between">
         <div th:text="${comment.user.username}"></div>
         <div th:text="${{comment.createdDate}}"></div>
     </div>
     <div class="card-body">
+        <p class="badge badge-secondary" th:text="${comment.parent} ? '@'+${comment.parent.user.username} : _"></p>
         <div th:text="${comment.content}" th:id="'comment-content'+${comment.id}" class="mb-5 collapse show"></div>
         <form class="mb-5 form-group collapse" th:id="'editForm'+${comment.id}">
             <textarea class="form-control mb-2"
@@ -33,7 +36,7 @@
             <th:block th:if="${comment.user.id}==${user.id}">
                 <a href="#" th:id="'comment-edit-btn'+${comment.id}" data-toggle="collapse" style="color: #218838"
                    th:attr="data-target='#editForm'+${comment.id}">수정</a>
-                <a href="#" th:onclick="|deleteComment(${comment.id}, ${comment.user.id})|" style="color: #dc3545">삭제</a>
+                <a href="#" th:onclick="|deleteComment(${comment.id}, ${comment.user.id}, ${postId})|" style="color: #dc3545">삭제</a>
             </th:block>
         </div>
     </div>

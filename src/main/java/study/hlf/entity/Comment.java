@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import study.hlf.dto.CommentFormDto;
+import study.hlf.dto.NestedCommentFormDto;
 
 import javax.persistence.*;
 
@@ -35,7 +36,7 @@ public class Comment extends BaseTimeEntity {
     private Board board;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "comment_id")
+    @JoinColumn(name = "parent_id")
     private Comment parent;
 
     @OneToMany(mappedBy = "parent")
@@ -43,7 +44,14 @@ public class Comment extends BaseTimeEntity {
 
     public Comment(CommentFormDto form, User user, Board board){
         this.content = form.getContent();
-        this.status = CommentStatus.NO_CHILD;
+        this.status = CommentStatus.ALIVE;
+        addUser(user);
+        addBoard(board);
+    }
+
+    public Comment(NestedCommentFormDto form, User user, Board board){
+        this.content = form.getContent();
+        this.status = CommentStatus.ALIVE;
         addUser(user);
         addBoard(board);
     }

@@ -37,8 +37,6 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom{
                 .selectFrom(board)
                 .innerJoin(board.user, user)
                 .fetchJoin()
-                .leftJoin(board.comments, comment)
-                .fetchJoin()
                 .where(usernameEq(condition.getUsername()),
                         titleContains(condition.getTitle()),
                         contentContains(condition.getContent()),

@@ -44,7 +44,7 @@
 
                     <!--댓글 보여주기-->
                     <div id="commentTable">
-                        <div th:each="comment : ${post.comments}">
+                        <div th:each="comment : ${comments}">
                             <div th:replace="fragments/comment :: showComment(comment=${comment}, postId=${post.id})" />
                         </div>
                     </div>
@@ -169,7 +169,7 @@
 </script>
 <!--댓글 삭제 자바스크립트 코드-->
 <script type="text/javascript">
-    function deleteComment(commentId, userId) {
+    function deleteComment(commentId, userId, postId) {
 
         if(!confirm("댓글을 삭제하시겠습니까?")){
             return false;
@@ -177,7 +177,7 @@
 
         var url = "/comment/"+ commentId +"/delete";
         var headers = {"Content-Type": "application/json; charset=utf-8", "X-HTTP-Method-Override": "POST"};
-        var params = {"commentId": commentId, "userId": userId};
+        var params = {"commentId": commentId, "userId": userId, "postId": postId};
 
         $.ajax({
             url: url,
@@ -187,7 +187,9 @@
             data: JSON.stringify(params)
         }).done(function (data, textStatus, xhr) {
             if(xhr.status == 200){
+
                 $("#comment"+commentId).remove();
+
                 var count = document.getElementById("commentCount").innerText;
                 count = count.substr(3);
                 document.getElementById("commentCount").innerText = "댓글 " + (parseInt(count)-1).toString();
@@ -195,6 +197,45 @@
                 alert("서버 오류로 삭제에 실패했습니다.");
             }
         })
+    }
+</script>
+<!--대댓글 작성 자바스크립트 코드-->
+<script type="text/javascript">
+    function writeNestedComment(user_id, board_id, comment_id) {
+        var content = document.getElementById("nestedComment"+comment_id);
+        if (content.value.length === 0) {
+            alert("댓글 내용을 작성해주세요.");
+            content.focus();
+            return false;
+        }
+
+        var url = "/comment/nested/write"
+        var headers = {"Content-Type": "application/json", "X-HTTP-Method-Override": "POST"};
+        var params = {"board_id": board_id, "content": content.value, "user_id": user_id, "parent_id": comment_id};
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            headers: headers,
+            dataType: "text",
+            data: JSON.stringify(params),
+            success: function(response) {
+                if (response.result == false) {
+                    alert("대댓글 등록에 실패하였습니다.");
+                    return false;
+                }
+                $('#comment'+comment_id).append(response);
+                content.value = "";
+                var count = document.getElementById("commentCount").innerText;
+                count = count.substr(3);
+                document.getElementById("commentCount").innerText = "댓글 " + (parseInt(count)+1).toString();
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+                alert("에러가 발생하였습니다.");
+                return false;
+            }
+        });
     }
 </script>
 <!--게시물 삭제 자바스크립트 코드-->

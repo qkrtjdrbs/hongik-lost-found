@@ -22,6 +22,7 @@ import study.hlf.entity.User;
 import study.hlf.exception.NotAuthorizedException;
 import study.hlf.repository.BoardSearch;
 import study.hlf.service.BoardService;
+import study.hlf.service.CommentService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -34,6 +35,7 @@ import static org.springframework.util.StringUtils.*;
 public class BoardController {
 
     private final BoardService boardService;
+    private final CommentService commentService;
 
     @GetMapping("/submit")
     public String boardSubmitForm(@ModelAttribute(name = "form") SubmitDto form){
@@ -86,12 +88,14 @@ public class BoardController {
         Page<Board> pagingBoard = boardService.searchBoardDynamic(boardSearch, pageable);
         List<Board> board = pagingBoard.getContent();
         Board post = boardService.findOneById(id);
+        Page<Comment> comments = commentService.findBoardComments(id);
         String url = requestURL(boardSearch);
 
         log.info("최종 url = {}", url);
 
         model.addAttribute("id", id);
         model.addAttribute("post", post);
+        model.addAttribute("comments", comments);
         model.addAttribute("url", url);
         model.addAttribute("board", board);
         model.addAttribute("pagingList", pagingBoard);

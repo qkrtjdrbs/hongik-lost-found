@@ -44,7 +44,7 @@
         <tr th:each="list : ${board}" th:classappend="${id}==${list.id} ? 'table-primary' : _">
             <td><span th:text="${list.id}"></span></td>
             <td><a th:href="@{/board/{id}(id=${list.id},page=${page})}">
-                <span th:text="${list.title}+' ['+${list.comments.size()}+']'"></span>
+                <span th:text="${list.title}+' ['+${list.commentCount}+']'"></span>
             </a></td>
             <td><span th:text="${list.user.username}"></span></td>
             <td><span th:text="${{list.createdDate}}"></span></td>
