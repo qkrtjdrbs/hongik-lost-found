@@ -100,7 +100,7 @@ public class CommentController {
     public String showMore(@RequestParam Long boardId, Pageable pageable, Model model,
                            @SessionAttribute(name = Const.LOGIN_USER, required = false) User loginUser){
         Page<Comment> comments = commentService.findBoardComments(boardId, pageable.getPageNumber());
-        Board post = boardService.findOneById(boardId);
+        Board post = boardService.justFindPostById(boardId);
         model.addAttribute("comments", comments);
         model.addAttribute("post", post);
         if(loginUser != null){

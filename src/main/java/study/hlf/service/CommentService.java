@@ -37,7 +37,9 @@ public class CommentService {
         }
         Comment comment = new Comment(form, user.get(), board.get());
         board.get().addCommentCount();
-        return commentRepository.save(comment);
+        Comment saveComment = commentRepository.save(comment);
+        saveComment.setGroupId(saveComment.getId());
+        return saveComment;
     }
 
     @Transactional
@@ -50,6 +52,7 @@ public class CommentService {
         }
         Comment comment = new Comment(form, user.get(), board.get());
         comment.addParent(parent.get());
+        comment.setGroupId(parent.get().getGroupId());
 
         board.get().addCommentCount();
         return commentRepository.save(comment);

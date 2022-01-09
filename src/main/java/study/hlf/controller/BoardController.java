@@ -13,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import study.hlf.Const;
-import study.hlf.dto.CommentFormDto;
 import study.hlf.dto.PostDeleteDto;
 import study.hlf.dto.SubmitDto;
 import study.hlf.entity.Board;
@@ -87,7 +86,7 @@ public class BoardController {
                         @SessionAttribute(required = false, name = Const.LOGIN_USER) User user){
         Page<Board> pagingBoard = boardService.searchBoardDynamic(boardSearch, pageable);
         List<Board> board = pagingBoard.getContent();
-        Board post = boardService.findOneById(id);
+        Board post = boardService.findPostById(id);
         Page<Comment> comments = commentService.findBoardComments(id, 0);
         String url = requestURL(boardSearch);
 
@@ -118,7 +117,7 @@ public class BoardController {
     public String edit(@PathVariable Long id,
                        Model model,
                        @SessionAttribute(required = false, name = Const.LOGIN_USER) User loginUser){
-        Board post = boardService.findOneById(id);
+        Board post = boardService.findPostById(id);
         if(post.getUser().getId() != loginUser.getId()){
             throw new NotAuthorizedException();
         }

@@ -1,9 +1,7 @@
 package study.hlf.service;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -27,7 +25,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -66,7 +63,7 @@ class BoardServiceTest {
         ReflectionTestUtils.setField(board, "id", 1L);
         given(boardRepository.findById(1L)).willReturn(Optional.of(board));
 
-        Board findPost = boardService.findOneById(1L);
+        Board findPost = boardService.findPostById(1L);
 
         assertThat(findPost.getTitle()).isEqualTo("t");
         assertThat(findPost.getContent()).isEqualTo("c");

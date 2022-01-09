@@ -21,6 +21,8 @@ public class Comment extends BaseTimeEntity {
     @Column(name = "comment_id")
     private Long id;
 
+    private Long groupId;
+
     @Lob
     private String content;
 
@@ -75,5 +77,9 @@ public class Comment extends BaseTimeEntity {
     //==비즈니스 메소드==//
     public void changeContent(String content){
         this.content = content;
+    }
+
+    public void setGroupId(Long id){
+        this.groupId = id;
     }
 }

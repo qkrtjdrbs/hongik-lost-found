@@ -32,7 +32,7 @@ public class BoardService {
     @Transactional
     public void editPost(Long id, SubmitDto form){
         try {
-            Board post = this.findOneById(id);
+            Board post = this.justFindPostById(id);
             post.changeTitle(form.getTitle());
             post.changeContent(form.getContent());
         } catch (Exception e) {
@@ -42,9 +42,14 @@ public class BoardService {
     }
 
     @Transactional
-    public Board findOneById(Long id){
+    public Board findPostById(Long id){
         Optional<Board> findPost = boardRepository.findById(id);
         findPost.ifPresent(Board::addHit);
+        return findPost.orElse(null);
+    }
+
+    public Board justFindPostById(Long id){
+        Optional<Board> findPost = boardRepository.findById(id);
         return findPost.orElse(null);
     }
 
