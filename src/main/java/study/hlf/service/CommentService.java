@@ -55,8 +55,8 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
-    public Page<Comment> findBoardComments(Long boardId){
-        return commentRepository.findComments(boardId, PageRequest.of(0, 10));
+    public Page<Comment> findBoardComments(Long boardId, int page){
+        return commentRepository.findComments(boardId, PageRequest.of(page, 10));
     }
 
     @Transactional

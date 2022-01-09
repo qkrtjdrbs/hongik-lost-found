@@ -2,6 +2,8 @@ package study.hlf.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -12,9 +14,11 @@ import study.hlf.dto.CommentDeleteDto;
 import study.hlf.dto.CommentEditDto;
 import study.hlf.dto.CommentFormDto;
 import study.hlf.dto.NestedCommentFormDto;
+import study.hlf.entity.Board;
 import study.hlf.entity.Comment;
 import study.hlf.entity.User;
 import study.hlf.exception.NotAuthorizedException;
+import study.hlf.service.BoardService;
 import study.hlf.service.CommentService;
 
 
@@ -24,6 +28,7 @@ import study.hlf.service.CommentService;
 public class CommentController {
 
     private final CommentService commentService;
+    private final BoardService boardService;
 
     @PostMapping("/comment/write")
     public String save(@RequestBody CommentFormDto form,
@@ -89,5 +94,18 @@ public class CommentController {
         }
         boolean edited = commentService.editComment(dto.getComment_id(), dto.getContent());
         return (edited ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+    }
+
+    @PostMapping("/comment/more")
+    public String showMore(@RequestParam Long boardId, Pageable pageable, Model model,
+                           @SessionAttribute(name = Const.LOGIN_USER, required = false) User loginUser){
+        Page<Comment> comments = commentService.findBoardComments(boardId, pageable.getPageNumber());
+        Board post = boardService.findOneById(boardId);
+        model.addAttribute("comments", comments);
+        model.addAttribute("post", post);
+        if(loginUser != null){
+            model.addAttribute("user", loginUser);
+        }
+        return "post :: #commentTable";
     }
 }

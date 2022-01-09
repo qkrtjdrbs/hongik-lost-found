@@ -3,7 +3,6 @@
 <th:block th:fragment="showComment(comment, postId)">
 <div class="card mb-2" th:id="'comment'+${comment.id}"}
      th:style="${comment.parent} ? 'margin-left: 2%' : _">
-    <!--부모 댓글 보여주기-->
     <div class="card-header bg-light d-flex justify-content-between">
         <div th:text="${comment.user.username}"></div>
         <div th:text="${{comment.createdDate}}"></div>
@@ -11,27 +10,29 @@
     <div class="card-body">
         <p class="badge badge-secondary" th:text="${comment.parent} ? '@'+${comment.parent.user.username} : _"></p>
         <div th:text="${comment.content}" th:id="'comment-content'+${comment.id}" class="mb-5 collapse show"></div>
-        <form class="mb-5 form-group collapse" th:id="'editForm'+${comment.id}">
-            <textarea class="form-control mb-2"
-                      style="height: 130px"
-                      th:id="'editContent'+${comment.id}"
-                      th:text="${comment.content}"
-                      th:placeholder="#{comment.placeholder}"></textarea>
-            <button type="button"
-                    th:onclick="|editComment('${user.id}', '${postId}', '${comment.id}')|"
-                    class="btn btn-success float-right">수정</button>
-        </form>
-        <form class="mb-5 form-group collapse" th:id="'writeForm'+${comment.id}" style="margin-left: 2%">
-            <textarea class="form-control mb-2"
-                      style="height: 130px"
-                      th:id="'nestedComment'+${comment.id}"
-                      th:placeholder="#{comment.placeholder}"></textarea>
-            <button type="button"
-                    th:onclick="|writeNestedComment('${user.id}', '${postId}', '${comment.id}')|"
-                    class="btn btn-primary float-right">작성</button>
-        </form>
+        <th:block th:if="${user}">
+            <form class="mb-5 form-group collapse" th:id="'editForm'+${comment.id}">
+                <textarea class="form-control mb-2"
+                          style="height: 130px"
+                          th:id="'editContent'+${comment.id}"
+                          th:text="${comment.content}"
+                          th:placeholder="#{comment.placeholder}"></textarea>
+                <button type="button"
+                        th:onclick="|editComment('${user.id}', '${postId}', '${comment.id}')|"
+                        class="btn btn-success float-right">수정</button>
+            </form>
+            <form class="mb-5 form-group collapse" th:id="'writeForm'+${comment.id}" style="margin-left: 2%">
+                <textarea class="form-control mb-2"
+                          style="height: 130px"
+                          th:id="'nestedComment'+${comment.id}"
+                          th:placeholder="#{comment.placeholder}"></textarea>
+                <button type="button"
+                        th:onclick="|writeNestedComment('${user.id}', '${postId}', '${comment.id}')|"
+                        class="btn btn-primary float-right">작성</button>
+            </form>
+        </th:block>
         <div th:if="${user}">
-            <a href="#" th:id="'comment-edit-btn'+${comment.id}" data-toggle="collapse"
+            <a href="#" th:id="'comment-write-btn'+${comment.id}" data-toggle="collapse"
                th:attr="data-target='#writeForm'+${comment.id}">답글</a>
             <th:block th:if="${comment.user.id}==${user.id}">
                 <a href="#" th:id="'comment-edit-btn'+${comment.id}" data-toggle="collapse" style="color: #218838"

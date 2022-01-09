@@ -88,7 +88,7 @@ public class BoardController {
         Page<Board> pagingBoard = boardService.searchBoardDynamic(boardSearch, pageable);
         List<Board> board = pagingBoard.getContent();
         Board post = boardService.findOneById(id);
-        Page<Comment> comments = commentService.findBoardComments(id);
+        Page<Comment> comments = commentService.findBoardComments(id, 0);
         String url = requestURL(boardSearch);
 
         log.info("최종 url = {}", url);

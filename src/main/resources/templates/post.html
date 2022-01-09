@@ -48,6 +48,11 @@
                             <div th:replace="fragments/comment :: showComment(comment=${comment}, postId=${post.id})" />
                         </div>
                     </div>
+                    <th:block th:if="${comments.hasNext()}">
+                        <button id="showMoreBtn"
+                                th:onclick="|showMoreComments(${post.id}, ${comments.number+1})|"
+                                class="btn btn-primary w-100">+10 댓글 더 보기</button>
+                    </th:block>
 
                     <!--댓글 작성 폼-->
                     <th:block th:if="${user}">
@@ -224,11 +229,47 @@
                     alert("대댓글 등록에 실패하였습니다.");
                     return false;
                 }
-                $('#comment'+comment_id).append(response);
                 content.value = "";
+                $('#comment'+comment_id).append(response);
+                $("#comment-write-btn"+comment_id).click();
                 var count = document.getElementById("commentCount").innerText;
                 count = count.substr(3);
                 document.getElementById("commentCount").innerText = "댓글 " + (parseInt(count)+1).toString();
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+                alert("에러가 발생하였습니다.");
+                return false;
+            }
+        });
+    }
+</script>
+<!--댓글 더 보기 자바스크립트 코드-->
+<script type="text/javascript">
+    function showMoreComments(boardId, page) {
+
+        var len = $("#commentTable").children().length;
+        page = len / 10;
+        var url = "/comment/more?boardId=" + boardId + "&" + "page="+page;
+        var headers = {"Content-Type": "application/json", "X-HTTP-Method-Override": "POST"};
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            headers: headers,
+            dataType: "text",
+            success: function(response) {
+                if (response.result == false) {
+                    alert("댓글 불러오는 데 실패했습니다.");
+                    return false;
+                }
+                $('#commentTable').replaceWith(response);
+                var count = document.getElementById("commentCount").innerText;
+                count = count.substr(3);
+                len = $("#commentTable").children().length;
+                if(count == len){
+                    $('#showMoreBtn').hide();
+                }
             },
             error: function(xhr, status, error) {
                 console.error(error);

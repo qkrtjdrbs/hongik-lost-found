@@ -2,6 +2,7 @@ package study.hlf.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +15,7 @@ import static study.hlf.entity.QComment.*;
 import static study.hlf.entity.QUser.*;
 
 @RequiredArgsConstructor
+@Slf4j
 public class CommentRepositoryImpl implements CommentRepositoryCustom{
 
     private final JPAQueryFactory queryFactory;
@@ -31,9 +33,10 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom{
                 .fetch();
 
         int total = content.size();
+        log.info("총 댓글 : {}", total);
+        log.info("요청 페이지 : {}", pageable.getPageNumber());
         content = convertNestedStructure(content);
-        content = new ArrayList<>(content.subList(pageable.getPageNumber() / 10,
-                Math.min(pageable.getPageNumber() / 10 + 10, total)));
+        content = new ArrayList<>(content.subList(0, Math.min((pageable.getPageNumber()+1) * 10, total)));
 
         return new PageImpl<>(content, pageable, total);
     }
