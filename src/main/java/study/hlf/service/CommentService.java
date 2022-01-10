@@ -65,8 +65,23 @@ public class CommentService {
     @Transactional
     public boolean deleteComment(Long commentId, Long postId){
         try {
-            commentRepository.deleteById(commentId);
-            boardRepository.findById(postId).get().subCommentCount();
+            Optional<Comment> findComment = commentRepository.findById(commentId);
+            findComment.ifPresentOrElse((comment -> {
+                if(comment.getChildren().size() != 0){
+                    comment.changeStatus();
+                } else {
+                    Long parentId = comment.getParent().getId();
+                    if(comment.getParent().isDeleteStatus()
+                            && comment.getParent().getChildren().size() == 1){
+                        commentRepository.deleteById(commentId);
+                        commentRepository.deleteById(parentId);
+                        boardRepository.findById(postId).get().subCommentCount();
+                    } else {
+                        commentRepository.deleteById(commentId);
+                    }
+                    boardRepository.findById(postId).get().subCommentCount();
+                }
+            }), null);
         } catch (Exception e) {
             e.printStackTrace();
             return false;

@@ -206,7 +206,7 @@
 </script>
 <!--대댓글 작성 자바스크립트 코드-->
 <script type="text/javascript">
-    function writeNestedComment(user_id, board_id, comment_id) {
+    function writeNestedComment(user_id, board_id, comment_id, group_id) {
         var content = document.getElementById("nestedComment"+comment_id);
         if (content.value.length === 0) {
             alert("댓글 내용을 작성해주세요.");
@@ -230,7 +230,7 @@
                     return false;
                 }
                 content.value = "";
-                $('#comment'+comment_id).append(response);
+                $('.group'+group_id).last().after(response);
                 $("#comment-write-btn"+comment_id).click();
                 var count = document.getElementById("commentCount").innerText;
                 count = count.substr(3);

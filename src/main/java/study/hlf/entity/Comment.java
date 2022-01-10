@@ -26,8 +26,7 @@ public class Comment extends BaseTimeEntity {
     @Lob
     private String content;
 
-    @Enumerated(value = EnumType.STRING)
-    private CommentStatus status;
+    private boolean deleteStatus = false;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
@@ -46,14 +45,12 @@ public class Comment extends BaseTimeEntity {
 
     public Comment(CommentFormDto form, User user, Board board){
         this.content = form.getContent();
-        this.status = CommentStatus.ALIVE;
         addUser(user);
         addBoard(board);
     }
 
     public Comment(NestedCommentFormDto form, User user, Board board){
         this.content = form.getContent();
-        this.status = CommentStatus.ALIVE;
         addUser(user);
         addBoard(board);
     }
@@ -81,5 +78,9 @@ public class Comment extends BaseTimeEntity {
 
     public void setGroupId(Long id){
         this.groupId = id;
+    }
+
+    public void changeStatus(){
+        this.deleteStatus = true;
     }
 }

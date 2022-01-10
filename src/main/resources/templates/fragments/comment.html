@@ -1,16 +1,23 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="showComment(comment, postId)">
-<div class="card mb-2" th:id="'comment'+${comment.id}"}
+<div th:class="'card mb-2 group'+${comment.groupId}" th:id="'comment'+${comment.id}"
      th:style="${comment.parent} ? 'margin-left: 2%' : _">
+    <!--댓글 작성자, 작성일-->
     <div class="card-header bg-light d-flex justify-content-between">
         <div th:text="${comment.user.username}"></div>
         <div th:text="${{comment.createdDate}}"></div>
     </div>
     <div class="card-body">
+        <!--댓글 내용-->
         <p class="badge badge-secondary" th:text="${comment.parent} ? '@'+${comment.parent.user.username} : _"></p>
-        <div th:text="${comment.content}" th:id="'comment-content'+${comment.id}" class="mb-5 collapse show"></div>
-        <th:block th:if="${user}">
+        <div th:if="${comment.deleteStatus}" th:text="#{comment.deleted}"
+             th:id="'comment-content'+${comment.id}" class="mb-5 collapse show"
+             style="opacity: 0.7"></div>
+        <div th:unless="${comment.deleteStatus}" th:text="${comment.content}"
+             th:id="'comment-content'+${comment.id}" class="mb-5 collapse show"></div>
+        <!--답글, 수정, 삭제 버튼-->
+        <th:block th:if="${user} and ${comment.deleteStatus} == false">
             <form class="mb-5 form-group collapse" th:id="'editForm'+${comment.id}">
                 <textarea class="form-control mb-2"
                           style="height: 130px"
@@ -27,19 +34,20 @@
                           th:id="'nestedComment'+${comment.id}"
                           th:placeholder="#{comment.placeholder}"></textarea>
                 <button type="button"
-                        th:onclick="|writeNestedComment('${user.id}', '${postId}', '${comment.id}')|"
+                        th:onclick="|writeNestedComment('${user.id}', '${postId}', '${comment.id}', '${comment.groupId}')|"
                         class="btn btn-primary float-right">작성</button>
             </form>
+            <div>
+                <a href="#" th:id="'comment-write-btn'+${comment.id}" data-toggle="collapse"
+                   th:attr="data-target='#writeForm'+${comment.id}">답글</a>
+                <th:block th:if="${comment.user.id}==${user.id}">
+                    <a href="#" th:id="'comment-edit-btn'+${comment.id}" data-toggle="collapse" style="color: #218838"
+                       th:attr="data-target='#editForm'+${comment.id}">수정</a>
+                    <a href="#" th:onclick="|deleteComment(${comment.id}, ${comment.user.id}, ${postId})|"
+                       style="color: #dc3545">삭제</a>
+                </th:block>
+            </div>
         </th:block>
-        <div th:if="${user}">
-            <a href="#" th:id="'comment-write-btn'+${comment.id}" data-toggle="collapse"
-               th:attr="data-target='#writeForm'+${comment.id}">답글</a>
-            <th:block th:if="${comment.user.id}==${user.id}">
-                <a href="#" th:id="'comment-edit-btn'+${comment.id}" data-toggle="collapse" style="color: #218838"
-                   th:attr="data-target='#editForm'+${comment.id}">수정</a>
-                <a href="#" th:onclick="|deleteComment(${comment.id}, ${comment.user.id}, ${postId})|" style="color: #dc3545">삭제</a>
-            </th:block>
-        </div>
     </div>
 </div>
 </th:block>
