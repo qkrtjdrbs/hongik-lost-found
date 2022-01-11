@@ -10,10 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import study.hlf.Const;
-import study.hlf.dto.CommentDeleteDto;
-import study.hlf.dto.CommentEditDto;
-import study.hlf.dto.CommentFormDto;
-import study.hlf.dto.NestedCommentFormDto;
+import study.hlf.dto.*;
 import study.hlf.entity.Board;
 import study.hlf.entity.Comment;
 import study.hlf.entity.User;
@@ -33,8 +30,10 @@ public class CommentController {
     @PostMapping("/comment/write")
     public String save(@RequestBody CommentFormDto form,
                        Model model,
-                       @SessionAttribute(name = Const.LOGIN_USER, required = false) User loginUser){
-        if(loginUser == null || loginUser.getId() != form.getUser_id()){
+                       @SessionAttribute(name = Const.LOGIN_USER, required = false) SessionUser loginUser){
+        if(loginUser.getId().longValue() != form.getUser_id().longValue()){
+            log.info("로그인 유저 id : {}", loginUser.getId());
+            log.info("요청 유저 id : {}", form.getUser_id());
             log.info("권한 없음");
             throw new NotAuthorizedException();
         }
@@ -56,8 +55,10 @@ public class CommentController {
     @PostMapping("/comment/nested/write")
     public String nestedSave(@RequestBody NestedCommentFormDto form,
                              Model model,
-                             @SessionAttribute(name = Const.LOGIN_USER, required = false) User loginUser){
-        if(loginUser == null || loginUser.getId() != form.getUser_id()){
+                             @SessionAttribute(name = Const.LOGIN_USER, required = false) SessionUser loginUser){
+        if(loginUser.getId().longValue() != form.getUser_id().longValue()){
+            log.info("로그인 유저 id : {}", loginUser.getId());
+            log.info("요청 유저 id : {}", form.getUser_id());
             log.info("권한 없음");
             throw new NotAuthorizedException();
         }
@@ -78,27 +79,31 @@ public class CommentController {
 
     @PostMapping("/comment/{id}/delete")
     public ResponseEntity delete(@RequestBody CommentDeleteDto dto,
-                                 @SessionAttribute(name = Const.LOGIN_USER, required = false) User loginUser){
-        if(loginUser == null || loginUser.getId() != dto.getUserId()){
+                                 @SessionAttribute(name = Const.LOGIN_USER, required = false) SessionUser loginUser){
+        if(loginUser.getId().longValue() != dto.getUserId().longValue()){
+            log.info("로그인 유저 id : {}", loginUser.getId().longValue());
+            log.info("요청 유저 id : {}", dto.getUserId().longValue());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        boolean deleted = commentService.deleteComment(dto.getCommentId(), dto.getPostId());
+        boolean deleted = commentService.deleteComment(dto.getCommentId(), dto.getPostId(), dto.getUserId());
         return (deleted ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
     @PostMapping("/comment/{id}/edit")
     public ResponseEntity edit(@RequestBody CommentEditDto dto,
-                                 @SessionAttribute(name = Const.LOGIN_USER, required = false) User loginUser){
-        if(loginUser == null || loginUser.getId() != dto.getUser_id()){
+                                 @SessionAttribute(name = Const.LOGIN_USER, required = false) SessionUser loginUser){
+        if(loginUser.getId().longValue() != dto.getUser_id().longValue()){
+            log.info("로그인 유저 id : {}", loginUser.getId());
+            log.info("요청 유저 id : {}", dto.getUser_id());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        boolean edited = commentService.editComment(dto.getComment_id(), dto.getContent());
+        boolean edited = commentService.editComment(dto.getComment_id(), dto.getContent(), dto.getUser_id());
         return (edited ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
     @PostMapping("/comment/more")
     public String showMore(@RequestParam Long boardId, Pageable pageable, Model model,
-                           @SessionAttribute(name = Const.LOGIN_USER, required = false) User loginUser){
+                           @SessionAttribute(name = Const.LOGIN_USER, required = false) SessionUser loginUser){
         Page<Comment> comments = commentService.findBoardComments(boardId, pageable.getPageNumber());
         Board post = boardService.justFindPostById(boardId);
         model.addAttribute("comments", comments);

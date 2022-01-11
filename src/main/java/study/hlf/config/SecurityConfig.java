@@ -1,14 +1,20 @@
 package study.hlf.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import study.hlf.entity.Role;
+import study.hlf.service.CustomOAuth2UserService;
 
+@RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final CustomOAuth2UserService customOAuth2UserService;
 
     // 정적인 파일에 대한 요청들
     private static final String[] AUTH_WHITELIST = {
@@ -39,8 +45,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 // login 없이 접근 허용 하는 url
                 .antMatchers("/**").permitAll()
-                // '/admin'의 경우 ADMIN 권한이 있는 사용자만 접근이 가능
-                .antMatchers("/admin").hasRole("ADMIN");
+                .antMatchers("/api/v1/**").hasRole(Role.USER.name())
+                .and()
+                .logout()
+                .logoutSuccessUrl("/board")
+                .and()
+                .oauth2Login()
+                .userInfoEndpoint()
+                .userService(customOAuth2UserService);
     }
 
     @Override

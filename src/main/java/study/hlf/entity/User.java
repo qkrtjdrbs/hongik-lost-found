@@ -21,6 +21,7 @@ public class User extends BaseTimeEntity {
     private String username;
     private String password;
     private String email;
+    private String picture;
 
     @Enumerated(value = EnumType.STRING)
     private Role role;
@@ -42,7 +43,12 @@ public class User extends BaseTimeEntity {
         this.username = dto.getUsername();
         this.password = dto.getPassword();
         this.email = dto.getEmail();
-        this.role = Role.ROLE_USER;
+        this.role = Role.USER;
     }
 
+    public User update(String username, String picture) {
+        this.username = username;
+        this.picture = picture;
+        return this;
+    }
 }

@@ -12,7 +12,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginCheckInterceptor())
-                .excludePathPatterns("/", "/new", "/login", "/error", "/board", "/board/*", "/comment/more",
+                .excludePathPatterns("/", "/new", "/user/login", "/user/logout", "/error", "/board", "/board/*", "/comment/more",
                         "/js/**", "/css/**", "/*.ico");
     }
 }

@@ -23,7 +23,7 @@ class UserRepositoryTest {
 
     @Test
     void saveTest(){
-        User user = new User("user", "123", "qwe", Role.ROLE_USER);
+        User user = new User("user", "123", "qwe", Role.USER);
         User savedUser = userRepository.save(user);
 
         assertThat(user).isEqualTo(savedUser);
@@ -31,8 +31,8 @@ class UserRepositoryTest {
 
     @Test
     void findByUsernameTest(){
-        User user1 = new User("user1", "123", "qwe", Role.ROLE_USER);
-        User user2 = new User("user2", "123", "qwe", Role.ROLE_USER);
+        User user1 = new User("user1", "123", "qwe", Role.USER);
+        User user2 = new User("user2", "123", "qwe", Role.USER);
         userRepository.save(user1);
         userRepository.save(user2);
 

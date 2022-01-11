@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import study.hlf.Const;
 import study.hlf.dto.PostDeleteDto;
+import study.hlf.dto.SessionUser;
 import study.hlf.dto.SubmitDto;
 import study.hlf.entity.Board;
 import study.hlf.entity.Comment;
@@ -45,7 +46,7 @@ public class BoardController {
     public String boardSubmit(
             @Valid @ModelAttribute(name = "form") SubmitDto form,
             BindingResult bindingResult,
-            @SessionAttribute(required = false, name = Const.LOGIN_USER) User loginUser
+            @SessionAttribute(required = false, name = Const.LOGIN_USER) SessionUser loginUser
     ){
         if(bindingResult.hasErrors()){
             log.info("에러 : {}", bindingResult.getFieldError());
@@ -63,7 +64,7 @@ public class BoardController {
     public String board(@PageableDefault(size = 15, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                         @ModelAttribute BoardSearch boardSearch,
                         Model model,
-                        @SessionAttribute(required = false, name = Const.LOGIN_USER) User user){
+                        @SessionAttribute(required = false, name = Const.LOGIN_USER) SessionUser user){
         Page<Board> pagingBoard = boardService.searchBoardDynamic(boardSearch, pageable);
         List<Board> board = pagingBoard.getContent();
         String url = requestURL(boardSearch);
@@ -83,7 +84,7 @@ public class BoardController {
                         @ModelAttribute BoardSearch boardSearch,
                         @PathVariable Long id,
                         Model model,
-                        @SessionAttribute(required = false, name = Const.LOGIN_USER) User user){
+                        @SessionAttribute(required = false, name = Const.LOGIN_USER) SessionUser user){
         Page<Board> pagingBoard = boardService.searchBoardDynamic(boardSearch, pageable);
         List<Board> board = pagingBoard.getContent();
         Board post = boardService.findPostById(id);
@@ -105,20 +106,20 @@ public class BoardController {
 
     @PostMapping("/board/{id}/delete")
     public ResponseEntity delete(@RequestBody PostDeleteDto dto,
-                                 @SessionAttribute(required = false, name = Const.LOGIN_USER) User loginUser){
-        if(loginUser.getId() != dto.getUserId()){
+                                 @SessionAttribute(required = false, name = Const.LOGIN_USER) SessionUser loginUser){
+        if(loginUser.getId().longValue() != dto.getUserId().longValue()){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-        boardService.deletePost(dto.getPostId());
+        boardService.deletePost(dto.getPostId(), dto.getUserId());
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("/board/{id}/edit")
     public String edit(@PathVariable Long id,
                        Model model,
-                       @SessionAttribute(required = false, name = Const.LOGIN_USER) User loginUser){
+                       @SessionAttribute(required = false, name = Const.LOGIN_USER) SessionUser loginUser){
         Board post = boardService.findPostById(id);
-        if(post.getUser().getId() != loginUser.getId()){
+        if(post.getUser().getId().longValue() != loginUser.getId().longValue()){
             throw new NotAuthorizedException();
         }
         model.addAttribute("form", new SubmitDto(post.getTitle(), post.getContent()));
@@ -128,12 +129,13 @@ public class BoardController {
     @PostMapping("/board/{id}/edit")
     public String edit(@PathVariable Long id,
                        @Valid @ModelAttribute(name = "form") SubmitDto form,
-                       BindingResult bindingResult){
+                       BindingResult bindingResult,
+                       @SessionAttribute(required = false, name = Const.LOGIN_USER) SessionUser loginUser){
         if(bindingResult.hasErrors()){
             return "submit";
         }
 
-        boardService.editPost(id, form);
+        boardService.editPost(id, form, loginUser.getId());
 
         return "redirect:/board/" + id;
     }

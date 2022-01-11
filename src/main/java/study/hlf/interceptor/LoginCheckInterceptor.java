@@ -3,6 +3,7 @@ package study.hlf.interceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.HandlerInterceptor;
 import study.hlf.Const;
+import study.hlf.dto.SessionUser;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,12 +19,13 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         log.info("{} : 로그인 체크 인터셉터 실행", requestURI);
 
         HttpSession session = request.getSession();
-        Object login = session.getAttribute(Const.LOGIN_USER);
+        SessionUser login = (SessionUser) session.getAttribute(Const.LOGIN_USER);
 
         if(login == null){
-            response.sendRedirect("/login?redirectURL=" + requestURI);
+            response.sendRedirect("/user/login?redirectURL=" + requestURI);
             return false;
         }
+        log.info("로그인 유저 : {}", login.getUsername());
 
         return true;
     }

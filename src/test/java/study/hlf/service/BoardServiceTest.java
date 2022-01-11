@@ -44,7 +44,7 @@ class BoardServiceTest {
 
     @Test
     void writeBoardTest(){
-        User user = new User("test", "123", "a", Role.ROLE_USER);
+        User user = new User("test", "123", "a", Role.USER);
         SubmitDto dto = new SubmitDto("t", "c");
         Board board = new Board(dto, user);
         ReflectionTestUtils.setField(board, "id", 1L);
@@ -57,7 +57,7 @@ class BoardServiceTest {
 
     @Test
     void findOneByIdTest(){
-        User user = new User("test", "123", "a", Role.ROLE_USER);
+        User user = new User("test", "123", "a", Role.USER);
         SubmitDto dto = new SubmitDto("t", "c");
         Board board = new Board(dto, user);
         ReflectionTestUtils.setField(board, "id", 1L);
@@ -72,21 +72,21 @@ class BoardServiceTest {
 
     @Test
     void editPostTest(){
-        User user = new User("test", "123", "a", Role.ROLE_USER);
+        User user = new User("test", "123", "a", Role.USER);
         SubmitDto dto = new SubmitDto("t", "c");
         Board board = new Board(dto, user);
         ReflectionTestUtils.setField(board, "id", 1L);
         given(boardRepository.findById(1L)).willReturn(Optional.of(board));
 
-        boardService.editPost(1L, new SubmitDto("c_t", "c_c"));
+        boardService.editPost(1L, new SubmitDto("c_t", "c_c"), user.getId());
         assertThat(board.getTitle()).isEqualTo("c_t");
         assertThat(board.getContent()).isEqualTo("c_c");
     }
 
     @Test
     void searchBoardDynamicTest(){
-        User userA = new User("testA", "123", "a", Role.ROLE_USER);
-        User userB = new User("testB", "123", "a", Role.ROLE_USER);
+        User userA = new User("testA", "123", "a", Role.USER);
+        User userB = new User("testB", "123", "a", Role.USER);
         SubmitDto dtoA = new SubmitDto("t1", "c1");
         SubmitDto dtoB = new SubmitDto("t2", "c2");
         SubmitDto dtoC = new SubmitDto("t3", "c3");

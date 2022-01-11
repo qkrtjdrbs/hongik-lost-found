@@ -29,7 +29,7 @@ class BoardRepositoryTest {
 
     @Test
     void basicCRUDTest(){
-        Board post = new Board(new SubmitDto("test", "save"), new User("user", "123", "a@a.com", Role.ROLE_USER));
+        Board post = new Board(new SubmitDto("test", "save"), new User("user", "123", "a@a.com", Role.USER));
         Board savedPost = boardRepository.save(post);
 
         assertThat(post).isEqualTo(savedPost);
@@ -61,8 +61,8 @@ class BoardRepositoryTest {
 
     @Test
     void dynamicSearchTest(){
-        User userA = new User("userA", "123", "a@a.com", Role.ROLE_USER);
-        User userB = new User("userB", "123", "a@a.com", Role.ROLE_USER);
+        User userA = new User("userA", "123", "a@a.com", Role.USER);
+        User userB = new User("userB", "123", "a@a.com", Role.USER);
         Board post1 = new Board(new SubmitDto("test1", "save1"), userA);
         Board post2 = new Board(new SubmitDto("test2", "save2"), userA);
         Board post3 = new Board(new SubmitDto("test3", "save3"), userB);

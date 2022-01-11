@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import study.hlf.dto.SubmitDto;
 import study.hlf.entity.Board;
+import study.hlf.exception.NotAuthorizedException;
 import study.hlf.repository.BoardRepository;
 import study.hlf.repository.BoardSearch;
 import study.hlf.repository.UserRepository;
@@ -30,9 +31,12 @@ public class BoardService {
     }
 
     @Transactional
-    public void editPost(Long id, SubmitDto form){
+    public void editPost(Long id, SubmitDto form, Long requestUserId){
         try {
             Board post = this.justFindPostById(id);
+            if(post.getUser().getId() != requestUserId){
+                throw new NotAuthorizedException();
+            }
             post.changeTitle(form.getTitle());
             post.changeContent(form.getContent());
         } catch (Exception e) {
@@ -54,8 +58,14 @@ public class BoardService {
     }
 
     @Transactional
-    public void deletePost(Long postId){
+    public void deletePost(Long postId, Long requestUserId){
         try{
+            Optional<Board> findPost = boardRepository.findById(postId);
+            findPost.ifPresent((post) -> {
+                if(post.getUser().getId() != requestUserId){
+                    throw new NotAuthorizedException();
+                }
+            });
             boardRepository.deleteById(postId);
         } catch (Exception e) {
             e.printStackTrace();

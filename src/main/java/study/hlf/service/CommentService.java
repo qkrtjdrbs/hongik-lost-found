@@ -11,6 +11,7 @@ import study.hlf.dto.NestedCommentFormDto;
 import study.hlf.entity.Board;
 import study.hlf.entity.Comment;
 import study.hlf.entity.User;
+import study.hlf.exception.NotAuthorizedException;
 import study.hlf.repository.BoardRepository;
 import study.hlf.repository.CommentRepository;
 import study.hlf.repository.UserRepository;
@@ -63,24 +64,27 @@ public class CommentService {
     }
 
     @Transactional
-    public boolean deleteComment(Long commentId, Long postId){
+    public boolean deleteComment(Long commentId, Long postId, Long requestUserId){
         try {
             Optional<Comment> findComment = commentRepository.findById(commentId);
             findComment.ifPresentOrElse((comment -> {
+                if(comment.getUser().getId() != requestUserId){
+                    throw new NotAuthorizedException();
+                }
                 if(comment.getChildren().size() != 0){
                     comment.changeStatus();
                 } else {
-                    Long parentId = comment.getParent().getId();
-                    if(comment.getParent().isDeleteStatus()
+                    Comment parent = comment.getParent();
+                    if(parent != null && comment.getParent().isDeleteStatus()
                             && comment.getParent().getChildren().size() == 1){
                         commentRepository.deleteById(commentId);
-                        commentRepository.deleteById(parentId);
+                        commentRepository.deleteById(parent.getId());
                         boardRepository.findById(postId).get().subCommentCount();
                     } else {
                         commentRepository.deleteById(commentId);
                     }
-                    boardRepository.findById(postId).get().subCommentCount();
                 }
+                boardRepository.findById(postId).get().subCommentCount();
             }), null);
         } catch (Exception e) {
             e.printStackTrace();
@@ -90,9 +94,12 @@ public class CommentService {
     }
 
     @Transactional
-    public boolean editComment(Long id, String content) {
+    public boolean editComment(Long id, String content, Long requestUserId) {
         Optional<Comment> findComment = commentRepository.findById(id);
         if(findComment.isPresent()){
+            if(findComment.get().getUser().getId() != requestUserId){
+                return false;
+            }
             findComment.get().changeContent(content);
             return true;
         }

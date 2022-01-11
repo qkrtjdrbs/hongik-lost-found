@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import study.hlf.dto.LoginDto;
+import study.hlf.dto.SessionUser;
 import study.hlf.entity.User;
 import study.hlf.service.UserService;
 
@@ -22,9 +23,9 @@ public class LoginController {
 
     private final UserService userService;
 
-    @GetMapping("/login")
+    @GetMapping("/user/login")
     public String login(@ModelAttribute("user") LoginDto user,
-                        @SessionAttribute(name = LOGIN_USER, required = false) User loginUser
+                        @SessionAttribute(name = LOGIN_USER, required = false) SessionUser loginUser
     ){
         log.info("login controller");
         if(loginUser == null){
@@ -34,12 +35,12 @@ public class LoginController {
         return "redirect:/";
     }
 
-    @PostMapping("/login")
+    @PostMapping("/user/login")
     public String login(
             @Valid @ModelAttribute("user") LoginDto user,
             BindingResult bindingResult,
             HttpServletRequest request,
-            @RequestParam(defaultValue = "/") String redirectURL
+            @RequestParam(defaultValue = "/board") String redirectURL
     ){
         if(bindingResult.hasErrors()){
             return "login";
@@ -52,7 +53,7 @@ public class LoginController {
         }
 
         HttpSession session = request.getSession();
-        session.setAttribute(LOGIN_USER, loginUser);
+        session.setAttribute(LOGIN_USER, new SessionUser(loginUser));
 
         return "redirect:" + redirectURL;
     }
@@ -64,6 +65,6 @@ public class LoginController {
         if(session != null){
             session.invalidate();
         }
-        return "redirect:/";
+        return "redirect:/board";
     }
 }
