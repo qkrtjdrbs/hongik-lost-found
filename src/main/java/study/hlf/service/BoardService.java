@@ -34,7 +34,7 @@ public class BoardService {
     public void editPost(Long id, SubmitDto form, Long requestUserId){
         try {
             Board post = this.justFindPostById(id);
-            if(post.getUser().getId() != requestUserId){
+            if(!requestUserId.equals(post.getUser().getId())){
                 throw new NotAuthorizedException();
             }
             post.changeTitle(form.getTitle());
@@ -62,7 +62,7 @@ public class BoardService {
         try{
             Optional<Board> findPost = boardRepository.findById(postId);
             findPost.ifPresent((post) -> {
-                if(post.getUser().getId() != requestUserId){
+                if(!requestUserId.equals(post.getUser().getId())){
                     throw new NotAuthorizedException();
                 }
             });

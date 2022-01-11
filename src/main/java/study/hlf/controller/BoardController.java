@@ -107,7 +107,7 @@ public class BoardController {
     @PostMapping("/board/{id}/delete")
     public ResponseEntity delete(@RequestBody PostDeleteDto dto,
                                  @SessionAttribute(required = false, name = Const.LOGIN_USER) SessionUser loginUser){
-        if(loginUser.getId().longValue() != dto.getUserId().longValue()){
+        if(!loginUser.getId().equals(dto.getUserId())){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
         boardService.deletePost(dto.getPostId(), dto.getUserId());
@@ -119,7 +119,7 @@ public class BoardController {
                        Model model,
                        @SessionAttribute(required = false, name = Const.LOGIN_USER) SessionUser loginUser){
         Board post = boardService.findPostById(id);
-        if(post.getUser().getId().longValue() != loginUser.getId().longValue()){
+        if(!post.getUser().getId().equals(loginUser.getId())){
             throw new NotAuthorizedException();
         }
         model.addAttribute("form", new SubmitDto(post.getTitle(), post.getContent()));

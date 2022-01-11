@@ -13,7 +13,6 @@ import study.hlf.Const;
 import study.hlf.dto.*;
 import study.hlf.entity.Board;
 import study.hlf.entity.Comment;
-import study.hlf.entity.User;
 import study.hlf.exception.NotAuthorizedException;
 import study.hlf.service.BoardService;
 import study.hlf.service.CommentService;
@@ -31,7 +30,7 @@ public class CommentController {
     public String save(@RequestBody CommentFormDto form,
                        Model model,
                        @SessionAttribute(name = Const.LOGIN_USER, required = false) SessionUser loginUser){
-        if(loginUser.getId().longValue() != form.getUser_id().longValue()){
+        if(!loginUser.getId().equals(form.getUser_id())){
             log.info("로그인 유저 id : {}", loginUser.getId());
             log.info("요청 유저 id : {}", form.getUser_id());
             log.info("권한 없음");
@@ -56,7 +55,7 @@ public class CommentController {
     public String nestedSave(@RequestBody NestedCommentFormDto form,
                              Model model,
                              @SessionAttribute(name = Const.LOGIN_USER, required = false) SessionUser loginUser){
-        if(loginUser.getId().longValue() != form.getUser_id().longValue()){
+        if(!loginUser.getId().equals(form.getUser_id())){
             log.info("로그인 유저 id : {}", loginUser.getId());
             log.info("요청 유저 id : {}", form.getUser_id());
             log.info("권한 없음");
@@ -80,9 +79,9 @@ public class CommentController {
     @PostMapping("/comment/{id}/delete")
     public ResponseEntity delete(@RequestBody CommentDeleteDto dto,
                                  @SessionAttribute(name = Const.LOGIN_USER, required = false) SessionUser loginUser){
-        if(loginUser.getId().longValue() != dto.getUserId().longValue()){
-            log.info("로그인 유저 id : {}", loginUser.getId().longValue());
-            log.info("요청 유저 id : {}", dto.getUserId().longValue());
+        if(!loginUser.getId().equals(dto.getUserId())){
+            log.info("로그인 유저 id : {}", loginUser.getId());
+            log.info("요청 유저 id : {}", dto.getUserId());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         boolean deleted = commentService.deleteComment(dto.getCommentId(), dto.getPostId(), dto.getUserId());
@@ -92,7 +91,7 @@ public class CommentController {
     @PostMapping("/comment/{id}/edit")
     public ResponseEntity edit(@RequestBody CommentEditDto dto,
                                  @SessionAttribute(name = Const.LOGIN_USER, required = false) SessionUser loginUser){
-        if(loginUser.getId().longValue() != dto.getUser_id().longValue()){
+        if(!loginUser.getId().equals(dto.getUser_id())){
             log.info("로그인 유저 id : {}", loginUser.getId());
             log.info("요청 유저 id : {}", dto.getUser_id());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

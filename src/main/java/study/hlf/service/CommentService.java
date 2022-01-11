@@ -68,11 +68,12 @@ public class CommentService {
         try {
             Optional<Comment> findComment = commentRepository.findById(commentId);
             findComment.ifPresentOrElse((comment -> {
-                if(comment.getUser().getId() != requestUserId){
+                if(!requestUserId.equals(comment.getUser().getId())){
                     throw new NotAuthorizedException();
                 }
                 if(comment.getChildren().size() != 0){
                     comment.changeStatus();
+                    boardRepository.findById(postId).get().subCommentCount();
                 } else {
                     Comment parent = comment.getParent();
                     if(parent != null && comment.getParent().isDeleteStatus()
@@ -82,9 +83,9 @@ public class CommentService {
                         boardRepository.findById(postId).get().subCommentCount();
                     } else {
                         commentRepository.deleteById(commentId);
+                        boardRepository.findById(postId).get().subCommentCount();
                     }
                 }
-                boardRepository.findById(postId).get().subCommentCount();
             }), null);
         } catch (Exception e) {
             e.printStackTrace();
@@ -97,7 +98,7 @@ public class CommentService {
     public boolean editComment(Long id, String content, Long requestUserId) {
         Optional<Comment> findComment = commentRepository.findById(id);
         if(findComment.isPresent()){
-            if(findComment.get().getUser().getId() != requestUserId){
+            if(!requestUserId.equals(findComment.get().getUser().getId())){
                 return false;
             }
             findComment.get().changeContent(content);
