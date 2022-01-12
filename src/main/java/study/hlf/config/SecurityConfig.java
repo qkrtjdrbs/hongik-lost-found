@@ -28,6 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/webjars/**",
             "/file/**",
             "/image/**",
+            "/icon/**",
             "/swagger/**",
             "/swagger-ui/**",
             // other public endpoints of your API may be appended to this array
