@@ -51,7 +51,7 @@ class BoardServiceTest {
         given(userRepository.findById(any())).willReturn(Optional.of(user));
         given(boardRepository.save(any())).willReturn(board);
 
-        Long boardId = boardService.writeBoard(2L, dto);
+        Long boardId = boardService.writeBoard(2L, dto, null, null);
         assertThat(boardId).isEqualTo(1L);
     }
 

@@ -22,6 +22,13 @@
                         <div th:field="${post.content}" th:utext="${post.content}"></div>
                     </div>
 
+                    <input type="hidden" id="status" th:value="${post.status}">
+                    <input type="hidden" id="longitude" th:value="${post.coord?.longitude}">
+                    <input type="hidden" id="latitude" th:value="${post.coord?.latitude}">
+
+                    <!--지도-->
+                    <div th:if="${post.coord?.longitude}" id="map" class="mb-5" style="width:50%;height:350px;"></div>
+
                     <!--게시물 수정 & 삭제 버튼-->
                     <div th:if="${user}" class="btn-group-lg">
                         <div th:if="${post.user.id}==${user.id}">
@@ -297,6 +304,48 @@
                 alert("서버 오류로 삭제에 실패했습니다.");
             }
         })
+    }
+</script>
+<!--카카오 api 사용위한 api키 등록-->
+<script type="text/javascript" th:src="'//dapi.kakao.com/v2/maps/sdk.js?appkey='+#{kakao_map_api_key}+'&libraries=services'"></script>
+<!--지도 관련 자바스크립트 코드-->
+<script>
+    var lat = document.getElementById("latitude").value;
+    var lng = document.getElementById("longitude").value;
+    var status = document.getElementById("status").value;
+    if(lat != null && lng != null){
+        var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+            mapOption = {
+                center: new kakao.maps.LatLng(lat, lng), // 지도의 중심좌표
+                level: 2 // 지도의 확대 레벨
+            };
+
+        var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+
+        // 마커가 표시될 위치입니다
+        var markerPosition  = new kakao.maps.LatLng(lat, lng);
+
+        // 마커를 생성합니다
+        var marker = new kakao.maps.Marker({
+            position: markerPosition
+        });
+
+        if(status == "LOST"){
+            // 인포윈도우로 장소에 대한 설명을 표시합니다
+            var infowindow = new kakao.maps.InfoWindow({
+                content: '<div style="width:150px;text-align:center;padding:6px 0;">분실 장소</div>'
+            });
+            infowindow.open(map, marker);
+        } else if(status == "FOUND"){
+            // 인포윈도우로 장소에 대한 설명을 표시합니다
+            var infowindow = new kakao.maps.InfoWindow({
+                content: '<div style="width:150px;text-align:center;padding:6px 0;">습득 장소</div>'
+            });
+            infowindow.open(map, marker);
+        }
+
+        // 마커가 지도 위에 표시되도록 설정합니다
+        marker.setMap(map);
     }
 </script>
 </html>

@@ -45,8 +45,8 @@ public class InitData {
             Optional<User> user2 = userService.findByUsername("data2");
             for(int i=1;i<200;i++){
                 SubmitDto form = new SubmitDto("제목" + i, "테스트");
-                if(i % 2 == 0) boardService.writeBoard(user1.get().getId(), form);
-                else boardService.writeBoard(user2.get().getId(), form);
+                if(i % 2 == 0) boardService.writeBoard(user1.get().getId(), form, null, null);
+                else boardService.writeBoard(user2.get().getId(), form, null, null);
             }
             for(int i=1;i<18;i++){
                 commentService.writeComment(new CommentFormDto(1L, 208L, "댓글"+i));

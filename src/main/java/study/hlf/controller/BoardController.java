@@ -46,13 +46,17 @@ public class BoardController {
     public String boardSubmit(
             @Valid @ModelAttribute(name = "form") SubmitDto form,
             BindingResult bindingResult,
+            @RequestParam Double longitude,
+            @RequestParam Double latitude,
             @SessionAttribute(required = false, name = Const.LOGIN_USER) SessionUser loginUser
     ){
         if(bindingResult.hasErrors()){
             log.info("에러 : {}", bindingResult.getFieldError());
             return "submit";
         }
-        Long boardId = boardService.writeBoard(loginUser.getId(), form);
+        log.info("embedded lng : {}", longitude);
+        log.info("embedded lng : {}", latitude);
+        Long boardId = boardService.writeBoard(loginUser.getId(), form, longitude, latitude);
         if(boardId == null){
             bindingResult.reject("submitPostFail");
             return "submit";

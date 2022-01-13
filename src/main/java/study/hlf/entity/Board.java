@@ -27,6 +27,9 @@ public class Board extends BaseTimeEntity {
     private int commentCount;
     private int hits;
 
+    @Embedded
+    private Coord coord = new Coord();
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = PERSIST)
     @JoinColumn(name = "user_id")
     private User user;
@@ -71,5 +74,9 @@ public class Board extends BaseTimeEntity {
 
     public void changeContent(String content){
         this.content = content;
+    }
+
+    public void changeCoord(Coord coord){
+        this.coord = coord;
     }
 }

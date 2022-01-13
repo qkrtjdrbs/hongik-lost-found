@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import study.hlf.dto.SubmitDto;
 import study.hlf.entity.Board;
+import study.hlf.entity.Coord;
 import study.hlf.exception.NotAuthorizedException;
 import study.hlf.repository.BoardRepository;
 import study.hlf.repository.BoardSearch;
@@ -25,8 +26,9 @@ public class BoardService {
     private final BoardRepository boardRepository;
 
     @Transactional
-    public Long writeBoard(Long userId, SubmitDto form){
+    public Long writeBoard(Long userId, SubmitDto form, Double longitude, Double latitude){
         Board board = new Board(form, userRepository.findById(userId).get());
+        board.changeCoord(new Coord(longitude, latitude));
         return boardRepository.save(board).getId();
     }
 
