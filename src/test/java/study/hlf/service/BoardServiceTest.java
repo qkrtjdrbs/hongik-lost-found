@@ -78,7 +78,7 @@ class BoardServiceTest {
         ReflectionTestUtils.setField(board, "id", 1L);
         given(boardRepository.findById(1L)).willReturn(Optional.of(board));
 
-        boardService.editPost(1L, new SubmitDto("c_t", "c_c"), user.getId());
+        boardService.editPost(1L, new SubmitDto("c_t", "c_c"), user.getId(), null, null);
         assertThat(board.getTitle()).isEqualTo("c_t");
         assertThat(board.getContent()).isEqualTo("c_c");
     }

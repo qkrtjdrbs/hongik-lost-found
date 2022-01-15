@@ -54,8 +54,6 @@ public class BoardController {
             log.info("에러 : {}", bindingResult.getFieldError());
             return "submit";
         }
-        log.info("embedded lng : {}", longitude);
-        log.info("embedded lng : {}", latitude);
         Long boardId = boardService.writeBoard(loginUser.getId(), form, longitude, latitude);
         if(boardId == null){
             bindingResult.reject("submitPostFail");
@@ -126,7 +124,7 @@ public class BoardController {
         if(!post.getUser().getId().equals(loginUser.getId())){
             throw new NotAuthorizedException();
         }
-        model.addAttribute("form", new SubmitDto(post.getTitle(), post.getContent()));
+        model.addAttribute("form", new SubmitDto(post.getTitle(), post.getContent(), post.getStatus()));
         return "submit";
     }
 
@@ -134,12 +132,14 @@ public class BoardController {
     public String edit(@PathVariable Long id,
                        @Valid @ModelAttribute(name = "form") SubmitDto form,
                        BindingResult bindingResult,
+                       @RequestParam Double longitude,
+                       @RequestParam Double latitude,
                        @SessionAttribute(required = false, name = Const.LOGIN_USER) SessionUser loginUser){
         if(bindingResult.hasErrors()){
             return "submit";
         }
 
-        boardService.editPost(id, form, loginUser.getId());
+        boardService.editPost(id, form, loginUser.getId(), longitude, latitude);
 
         return "redirect:/board/" + id;
     }

@@ -45,7 +45,7 @@ public class Board extends BaseTimeEntity {
         this.content = form.getContent();
         this.commentCount = 0;
         this.hits = 0;
-        this.status = BoardStatus.LOST;
+        this.status = form.getStatus();
         this.addUser(user);
     }
 
@@ -78,5 +78,9 @@ public class Board extends BaseTimeEntity {
 
     public void changeCoord(Coord coord){
         this.coord = coord;
+    }
+
+    public void changeStatus(BoardStatus status){
+        this.status = status;
     }
 }
