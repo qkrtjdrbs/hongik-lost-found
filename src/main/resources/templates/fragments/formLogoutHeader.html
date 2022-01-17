@@ -10,7 +10,12 @@
     <script src="https://cdn.tiny.cloud/1/9onec6q0rry2u3m7c1yu0in1wld1t0fzrsx4szh6lr4fd1we/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
     <script>
         tinymce.init({
-            selector: '#mytextarea'
+            selector: '#mytextarea',
+            plugins : 'advlist autolink link image lists charmap print preview',
+            toolbar: [
+                'undo redo | styleselect | bold italic | alignleft aligncenter alignright | link image'
+            ],
+            images_upload_url: '/images/upload',
         });
     </script>
     <!-- Custom styles for this template -->

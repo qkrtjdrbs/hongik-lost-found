@@ -23,7 +23,7 @@ public class SubmitDto {
     private String title;
 
     @Lob
-    @Size(min = 1, max = 3000)
+    @Size(min = 1, max = 30000)
     private String content;
 
     @NotNull
