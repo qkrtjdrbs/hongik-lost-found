@@ -79,7 +79,7 @@
                                                       id="commentContent"
                                                       th:placeholder="#{comment.placeholder}"></textarea>
                                             <button type="button"
-                                                    th:onclick="|writeComment('${user.id}', '${post.id}')|"
+                                                    th:onclick="|writeComment('${user.id}', '${post.id}', ${user.enabled})|"
                                                     class="btn btn-success float-right">댓글</button>
                                         </form>
                                     </li>
@@ -106,7 +106,11 @@
 </body>
 <!--댓글 작성 자바스크립트 코드-->
 <script type="text/javascript">
-    function writeComment(user_id, board_id) {
+    function writeComment(user_id, board_id, enabled) {
+        if(enabled === false){
+            alert("댓글 작성을 위해서는 이메일 인증이 필요합니다");
+            return false;
+        }
         var content = document.getElementById("commentContent");
         if (content.value.length === 0) {
             alert("댓글 내용을 작성해주세요.");
@@ -213,7 +217,11 @@
 </script>
 <!--대댓글 작성 자바스크립트 코드-->
 <script type="text/javascript">
-    function writeNestedComment(user_id, board_id, comment_id, group_id) {
+    function writeNestedComment(user_id, board_id, comment_id, group_id, enabled) {
+        if(enabled === false){
+            alert("댓글 작성을 위해서는 이메일 인증이 필요합니다");
+            return false;
+        }
         var content = document.getElementById("nestedComment"+comment_id);
         if (content.value.length === 0) {
             alert("댓글 내용을 작성해주세요.");

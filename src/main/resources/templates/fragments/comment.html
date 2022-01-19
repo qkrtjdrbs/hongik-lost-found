@@ -34,7 +34,7 @@
                           th:id="'nestedComment'+${comment.id}"
                           th:placeholder="#{comment.placeholder}"></textarea>
                 <button type="button"
-                        th:onclick="|writeNestedComment('${user.id}', '${postId}', '${comment.id}', '${comment.groupId}')|"
+                        th:onclick="|writeNestedComment('${user.id}', '${postId}', '${comment.id}', '${comment.groupId}', ${user.enabled})|"
                         class="btn btn-primary float-right">작성</button>
             </form>
             <div>

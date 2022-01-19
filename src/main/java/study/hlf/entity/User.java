@@ -23,6 +23,8 @@ public class User extends BaseTimeEntity {
     private String email;
     private String picture;
 
+    private boolean enabled;
+
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
@@ -32,17 +34,19 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
-    public User(String username, String email, String picture, Role role) {
+    public User(String username, String email, String picture, Role role, boolean enabled) {
         this.username = username;
         this.email = email;
         this.picture = picture;
         this.role = role;
+        this.enabled = enabled;
     }
 
-    public User(SignUpDto dto) {
+    public User(SignUpDto dto, boolean enabled) {
         this.username = dto.getUsername();
         this.password = dto.getPassword();
         this.email = dto.getEmail();
+        this.enabled = enabled;
         this.role = Role.USER;
     }
 

@@ -64,6 +64,6 @@ public class OAuthAttributes {
     }
 
     public User toEntity() {
-        return new User(name, email, picture, Role.USER);
+        return new User(name, email, picture, Role.USER, true);
     }
 }
