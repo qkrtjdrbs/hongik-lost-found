@@ -14,6 +14,9 @@ import study.hlf.entity.User;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import static study.hlf.Messages.*;
 
 @Controller
@@ -26,7 +29,7 @@ public class HomeController {
             Model model,
             @RequestParam(defaultValue = "") String message,
             HttpServletRequest request
-    ){
+    ) throws UnsupportedEncodingException {
         log.info("home message : {}", message);
         model.addAttribute("user", loginUser);
         if(message.equals(SUCCESSFUL_AUTHENTICATED_MESSAGE)){
@@ -35,6 +38,8 @@ public class HomeController {
                 session.invalidate();
             }
             message = message + " " + RELOGIN_MESSAGE;
+            message = URLEncoder.encode(message, "UTF-8");
+            return "redirect:/?message="+message;
         }
         model.addAttribute("message", message);
         return "home";
