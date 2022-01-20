@@ -55,4 +55,8 @@ public class User extends BaseTimeEntity {
         this.picture = picture;
         return this;
     }
+
+    public void enabledByToken(){
+        this.enabled = true;
+    }
 }

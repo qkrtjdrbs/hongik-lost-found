@@ -25,7 +25,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             response.sendRedirect("/user/login?redirectURL=" + requestURI);
             return false;
         }
-        if(!login.isEnabled()){
+        if(!requestURI.equals("/auth/email/resend") && !login.isEnabled()){
             log.info("이메일 미인증 사용자 : 게시판으로 redirect");
             response.sendRedirect("/board");
             return false;

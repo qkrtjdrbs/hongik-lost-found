@@ -10,9 +10,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import study.hlf.dto.SignUpDto;
+import study.hlf.service.AuthTokenService;
 import study.hlf.service.UserService;
 
 import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Controller
 @RequiredArgsConstructor
@@ -20,6 +24,7 @@ import javax.validation.Valid;
 public class UserController {
 
     private final UserService userService;
+    private final AuthTokenService authTokenService;
 
     @GetMapping("/new")
     public String signUpForm(Model model){
@@ -28,9 +33,8 @@ public class UserController {
     }
 
     @PostMapping("/new")
-    public String signUp(@Valid @ModelAttribute(name = "user") SignUpDto user, BindingResult bindingResult){
+    public String signUp(@Valid @ModelAttribute(name = "user") SignUpDto user, BindingResult bindingResult) throws UnsupportedEncodingException {
         if(bindingResult.hasErrors()){
-            log.info("DTO = {}", user);
             for (FieldError fieldError : bindingResult.getFieldErrors()) {
                 log.info("bindingResult = {}", fieldError.getCode());
             }
@@ -41,6 +45,9 @@ public class UserController {
             bindingResult.reject("duplicatedUsername", "이미 존재하는 아이디 입니다.");
             return "signUp";
         }
-        return "redirect:/login";
+        authTokenService.sendEmailWithAuthToken(saveId, user.getEmail());
+        String message = "인증 메일이 발송되었습니다.";
+        message = URLEncoder.encode(message, "UTF-8");
+        return "redirect:/?message="+message;
     }
 }
