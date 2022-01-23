@@ -9,6 +9,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import study.hlf.Messages;
 import study.hlf.dto.SignUpDto;
 import study.hlf.service.AuthTokenService;
 import study.hlf.service.UserService;
@@ -17,6 +18,8 @@ import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+
+import static study.hlf.Messages.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -46,8 +49,7 @@ public class UserController {
             return "signUp";
         }
         authTokenService.sendEmailWithAuthToken(saveId, user.getEmail());
-        String message = "인증 메일이 발송되었습니다.";
-        message = URLEncoder.encode(message, "UTF-8");
+        String message = URLEncoder.encode(MAIL_SEND_MESSAGE, "UTF-8");
         return "redirect:/?message="+message;
     }
 }

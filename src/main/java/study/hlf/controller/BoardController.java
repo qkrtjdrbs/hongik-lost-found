@@ -71,7 +71,7 @@ public class BoardController {
         List<Board> board = pagingBoard.getContent();
         String url = requestURL(boardSearch);
 
-        log.info("최종 url = {}", url);
+        log.info("요청 url = {}", url);
 
         model.addAttribute("url", url);
         model.addAttribute("board", board);
@@ -93,7 +93,7 @@ public class BoardController {
         Page<Comment> comments = commentService.findBoardComments(id, 0);
         String url = requestURL(boardSearch);
 
-        log.info("최종 url = {}", url);
+        log.info("요청 url = {}", url);
 
         model.addAttribute("id", id);
         model.addAttribute("post", post);
