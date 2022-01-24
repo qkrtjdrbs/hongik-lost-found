@@ -61,7 +61,7 @@ public class EmailController {
     public String resendAuthToken(@RequestParam Long userId) throws UnsupportedEncodingException {
         User findUser = userService.findUserById(userId);
         authTokenService.sendEmailWithAuthToken(userId, findUser.getEmail());
-        String message = MAIL_SEND_MESSAGE;
+        String message = AUTH_MAIL_SEND_MESSAGE;
         message = URLEncoder.encode(message, "UTF-8");
         return "redirect:/?message="+message;
     }

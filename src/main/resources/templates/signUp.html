@@ -2,10 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/formLogoutHeader :: formHeader" />
 <body>
-<div class="container">
-    <div class="py-5 text-center">
-        <h2>홍익 분실물 센터</h2>
-    </div>
+<div class="container login">
+    <a href="/">
+        <div class="py-5 text-center">
+            <h2>홍익 분실물 센터</h2>
+        </div>
+    </a>
     <form th:action th:object="${user}" method="post">
         <div th:if="${#fields.hasGlobalErrors()}">
             <p class="field-error" th:each="err : ${#fields.globalErrors()}"

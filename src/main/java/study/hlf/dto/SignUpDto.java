@@ -23,6 +23,7 @@ public class SignUpDto {
     private String password;
 
     @Email
+    @NotNull
     private String email;
 
     public SignUpDto(String username, String password, String email) {

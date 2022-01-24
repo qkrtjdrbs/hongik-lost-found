@@ -40,7 +40,7 @@ public class InitData {
 
         public void dbInit(){
             for(int i=1;i<10;i++){
-                userService.save(new SignUpDto("data"+i, "1234", "a@a.com"));
+                userService.save(new SignUpDto("data"+i, "1234", "a"+i+"@a.com"));
             }
             Optional<User> user1 = userService.findByUsername("data1");
             Optional<User> user2 = userService.findByUsername("data2");
