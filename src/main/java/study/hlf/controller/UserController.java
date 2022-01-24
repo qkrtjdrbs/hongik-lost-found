@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import study.hlf.dto.HelpIdDto;
+import study.hlf.dto.HelpPasswordDto;
 import study.hlf.dto.SignUpDto;
 import study.hlf.entity.User;
 import study.hlf.service.AuthTokenService;
@@ -70,7 +71,34 @@ public class UserController {
 
         userService.sendEmailWithUsername(findUser.getEmail(), findUser.getUsername());
 
-        String message = URLEncoder.encode(MAIL_SEND_MESSAGE, "UTF-8");
+        String message = URLEncoder.encode(MAIL_SEND_USERNAME_MESSAGE, "UTF-8");
+        return "redirect:/?message="+message;
+    }
+
+    @GetMapping("/help/password")
+    public String helpPasswordForm(@ModelAttribute(name = "form") HelpPasswordDto form){
+        return "helpPassword";
+    }
+
+    @PostMapping("/help/password")
+    public String helpPassword(@Valid @ModelAttribute(name = "form") HelpPasswordDto form,
+                               BindingResult bindingResult) throws UnsupportedEncodingException {
+        if(bindingResult.hasErrors()){
+            return "helpPassword";
+        }
+        User findUser = userService.findUserByEmail(form.getEmail());
+        if(findUser == null){
+            bindingResult.reject("NotExistEmail", "가입되지 않은 이메일입니다.");
+            return "helpPassword";
+        }
+        if(!findUser.getUsername().equals(form.getUsername())){
+            bindingResult.reject("NotMatchedEmail", "아이디에 등록된 이메일이 아닙니다.");
+            return "helpPassword";
+        }
+
+        userService.sendEmailWithTempPassword(findUser);
+
+        String message = URLEncoder.encode(MAIL_SEND_TEMP_PASSWORD_MESSAGE, "UTF-8");
         return "redirect:/?message="+message;
     }
 

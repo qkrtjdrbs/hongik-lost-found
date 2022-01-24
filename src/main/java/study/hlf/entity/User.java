@@ -59,4 +59,8 @@ public class User extends BaseTimeEntity {
     public void enabledByToken(){
         this.enabled = true;
     }
+
+    public void changePassword(String password){
+        this.password = password;
+    }
 }

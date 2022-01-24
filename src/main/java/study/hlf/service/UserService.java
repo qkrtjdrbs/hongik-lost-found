@@ -11,6 +11,7 @@ import study.hlf.entity.User;
 import study.hlf.repository.UserRepository;
 
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +33,20 @@ public class UserService {
         user.encodePassword();
         return userRepository.save(new User(user, false)).getId();
     }
+
+    @Transactional
+    public void sendEmailWithTempPassword(User user){
+        String tempPassword = makeTempPassword();
+        user.changePassword(encoder.encode(tempPassword));
+
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(user.getEmail());
+        mailMessage.setSubject("홍익 분실물 센터 임시 비밀번호");
+        mailMessage.setText("임시 비밀번호는 " + tempPassword + " 입니다. " +
+                "로그인 후 본인의 비밀번호로 변경해주세요.");
+        emailService.sendEmail(mailMessage);
+    }
+
 
     public void sendEmailWithUsername(String email, String username){
         SimpleMailMessage mailMessage = new SimpleMailMessage();
@@ -60,5 +75,19 @@ public class UserService {
         return findUser
                 .filter(u -> encoder.matches(user.getPassword(), u.getPassword()))
                 .orElse(null);
+    }
+
+    private String makeTempPassword() {
+        int leftLimit = 48; // numeral '0'
+        int rightLimit = 122; // letter 'z'
+        int maxSize = 10;
+
+        Random random = new Random();
+
+        return random.ints(leftLimit,rightLimit + 1)
+                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                .limit(maxSize)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
     }
 }
