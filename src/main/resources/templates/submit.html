@@ -14,8 +14,7 @@
                th:text="${err}">전체 오류 메시지</p>
         </div>
         <div class="mb-2">
-            <label for="title">제목</label>
-            <input type="text" id="title" th:field="*{title}" class="form-control"
+            <input type="text" id="title" th:field="*{title}" class="form-control" placeholder="제목"
                    th:errorclass="field-error">
             <div class="field-error" th:errors="*{title}" />
         </div>
@@ -51,7 +50,7 @@
         <hr class="my-4">
         <div class="row">
             <div class="col">
-                <button class="w-100 mb-5 btn btn-primary btn-lg" id="save" type="submit">작성</button>
+                <button class="w-100 mb-5 btn btn-primary btn-group-sm" id="save" type="submit">작성</button>
             </div>
         </div>
     </form>
