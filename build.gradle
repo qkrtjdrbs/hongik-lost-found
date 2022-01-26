@@ -38,6 +38,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
 
+	//실시간 알림 위한 Socket
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
 	//querydsl 추가
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
 	implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
@@ -48,6 +51,7 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-aws
 	implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.3.1'
 
+	//mail
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
 	runtimeOnly 'com.h2database:h2'

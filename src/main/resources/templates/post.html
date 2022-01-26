@@ -79,7 +79,8 @@
                                                       id="commentContent"
                                                       th:placeholder="#{comment.placeholder}"></textarea>
                                             <button type="button"
-                                                    th:onclick="|writeComment('${user.id}', '${post.id}', ${user.enabled})|"
+                                                    th:onclick="|writeComment('${user.id}', '${post.id}',
+                                                     '${post.user.id}', ${user.enabled})|"
                                                     class="btn btn-success float-right">댓글</button>
                                         </form>
                                     </li>
@@ -101,12 +102,15 @@
             </div>
         </div>
     </div>
+    <div id="toast-box" class="position-fixed bottom-0 right-0 p-3"
+         style="z-index: 5; right: 0; bottom: 0;">
+    </div>
     <nav th:replace="fragments/boardPagination :: boardPagination(list=${pagingList}, url=${url})" />
 </div>
 </body>
 <!--댓글 작성 자바스크립트 코드-->
 <script type="text/javascript">
-    function writeComment(user_id, board_id, enabled) {
+    function writeComment(user_id, board_id, owner_id, enabled) {
         if(enabled === false){
             alert("댓글 작성을 위해서는 이메일 인증이 필요합니다");
             return false;
@@ -133,6 +137,10 @@
                     alert("댓글 등록에 실패하였습니다.");
                     return false;
                 }
+
+                let commentAlarm = owner_id + "," + board_id + "," + content.value;
+                sock.send(commentAlarm);
+
                 $('#commentTable').append(response);
                 content.value = "";
                 var count = document.getElementById("commentCount").innerText;

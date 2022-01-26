@@ -9,8 +9,71 @@
     <!-- Bootstrap JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript" src="/js/bootstrap.js"></script>
-    <!-- Custom styles for this template -->
+    <!--Socket JS-->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script type="text/javascript">
+        var socket = null;
+
+        $(document).ready(function (){
+            connectWs();
+        });
+
+        function connectWs(){
+            sock = new SockJS( "/echo" );
+            socket = sock;
+
+            sock.onopen = function() {
+                console.log('info: socket connection opened.');
+            };
+
+            sock.onmessage = function(evt) {
+                var data = evt.data;
+                console.log("ReceiveMessage : " + data + "\n");
+
+                var alarm = "<div class=\"toast show\" role=\"alert\" aria-live=\"assertive\" aria-atomic=\"true\">\n" +
+                    "  <div class=\"toast-header\">\n" +
+                    "    <strong class=\"mr-auto\">HLF</strong>\n" +
+                    "    <small>방금</small>\n" +
+                    "    <button type=\"button\" class=\"ml-2 mb-1 close\" data-dismiss=\"toast\" aria-label=\"Close\">\n" +
+                    "      <span aria-hidden=\"true\">&times;</span>\n" +
+                    "    </button>\n" +
+                    "  </div>\n" +
+                    "  <div class=\"toast-body\">\n" +
+                            data +
+                    "  </div>\n" +
+                    "</div>";
+
+                $('#toast-box').append(alarm);
+                $(".toast").toast({"animation": true, "autohide": false});
+
+                /*$.ajax({
+                    url : '',
+                    type : 'POST',
+                    dataType: 'text',
+                    success : function(data) {
+                        if(data == '0'){
+                        }else{
+                            $('#alarmCountSpan').addClass('bell-badge-danger bell-badge')
+                            $('#alarmCountSpan').text(data);
+                        }
+                    },
+                    error : function(err){
+                        alert('err');
+                    }
+                });*/
+
+            };
+
+            sock.onclose = function() {
+                console.log('socket connect close');
+            };
+
+            sock.onerror = function (err) {console.log('Errors : ' , err);};
+
+        }
+    </script>
     <title>홍익 분실물 센터</title>
+    <!-- Custom styles for this template -->
     <style>
         .container-fluid {
             padding: 0;

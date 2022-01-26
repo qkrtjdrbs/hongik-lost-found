@@ -19,7 +19,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class SubmitDto {
 
-    @NotBlank
+    @Size(min = 1, max = 20)
     private String title;
 
     @Lob
