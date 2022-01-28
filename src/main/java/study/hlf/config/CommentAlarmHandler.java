@@ -64,7 +64,7 @@ public class CommentAlarmHandler extends TextWebSocketHandler {
                     if(substring.length() == MAX_COMMENT_LENGTH){
                         substring += "...";
                     }
-                    TextMessage textMessage = new TextMessage("<a href='/board/" + boardId + "'>" +
+                    TextMessage textMessage = new TextMessage("<a href='/board/" + boardId + "#commentWriteForm'>" +
                             post.getTitle() + " 게시물에 " +
                             "새 댓글이 달렸습니다 : " + substring + "</a>");
                     receiverSession.sendMessage(textMessage);
