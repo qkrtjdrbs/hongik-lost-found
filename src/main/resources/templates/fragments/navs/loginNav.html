@@ -6,8 +6,19 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
+
+        <!--유저 프로필 사진-->
+        <span>
+            <img th:if="${user.picture}" th:src="${user.picture}"
+                 width="40" height="40" style="border-radius: 50%; margin-right: 2px;" >
+            <i th:unless="${user.picture}" class="bi bi-person-circle mr-1"
+               style="font-size: 2rem; color: white"></i>
+        </span>
+
         <span th:text="|안녕하세요, ${user.username}님!|" class="text-info mr-2">
         </span>
+
+        <!--이메일 인증 유저 or not-->
         <ul th:if="${user.enabled}" class="navbar-nav">
             <li class="nav-item">
                 <a th:text="#{post.submit}" class="nav-link active" href="/submit">글 등록</a>
@@ -22,6 +33,8 @@
                 <a th:href="'/auth/email/resend?userId='+${user.id}">인증 링크 재전송</a>
             </li>
         </ul>
+
+        <!--로그아웃 버튼-->
         <ul class="navbar-nav ml-md-auto">
             <li class="nav-item active">
                 <a class="nav-link" href="/user/logout">

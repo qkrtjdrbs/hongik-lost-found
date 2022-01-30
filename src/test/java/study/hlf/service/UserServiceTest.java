@@ -32,7 +32,7 @@ public class UserServiceTest {
     @Test
     void saveUserTest_success(){
         SignUpDto dto = new SignUpDto("test1", "123", "a@a.com");
-        User user = new User(dto);
+        User user = new User(dto, true);
         ReflectionTestUtils.setField(user, "id", 1L);
 
         given(userRepository.findByUsername(dto.getUsername())).willReturn(Optional.empty());
@@ -47,7 +47,7 @@ public class UserServiceTest {
     @Test
     void saveUserTest_fail(){
         SignUpDto dto = new SignUpDto("test1", "123", "a@a.com");
-        User user = new User(dto);
+        User user = new User(dto, true);
         ReflectionTestUtils.setField(user, "id", 1L);
 
         given(userRepository.findByUsername(dto.getUsername())).willReturn(Optional.of(user));
@@ -60,7 +60,7 @@ public class UserServiceTest {
     @Test
     void loginTest_success(){
         SignUpDto dto = new SignUpDto("test1", "123", "a@a.com");
-        User user = new User(dto);
+        User user = new User(dto, true);
         ReflectionTestUtils.setField(user, "id", 1L);
         LoginDto loginDto = new LoginDto("test1", "123");
 
@@ -75,7 +75,7 @@ public class UserServiceTest {
     @Test
     void loginTest_wrongPassword(){
         SignUpDto dto = new SignUpDto("test1", "123", "a@a.com");
-        User user = new User(dto);
+        User user = new User(dto, true);
         ReflectionTestUtils.setField(user, "id", 1L);
         LoginDto loginDto = new LoginDto("test1", "1234");
 

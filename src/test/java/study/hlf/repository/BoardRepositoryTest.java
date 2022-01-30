@@ -29,7 +29,7 @@ class BoardRepositoryTest {
 
     @Test
     void basicCRUDTest(){
-        Board post = new Board(new SubmitDto("test", "save"), new User("user", "123", "a@a.com", Role.USER));
+        Board post = new Board(new SubmitDto("test", "save", BoardStatus.LOST), new User("user", "123", "a@a.com", Role.USER, true));
         Board savedPost = boardRepository.save(post);
 
         assertThat(post).isEqualTo(savedPost);
@@ -61,13 +61,13 @@ class BoardRepositoryTest {
 
     @Test
     void dynamicSearchTest(){
-        User userA = new User("userA", "123", "a@a.com", Role.USER);
-        User userB = new User("userB", "123", "a@a.com", Role.USER);
-        Board post1 = new Board(new SubmitDto("test1", "save1"), userA);
-        Board post2 = new Board(new SubmitDto("test2", "save2"), userA);
-        Board post3 = new Board(new SubmitDto("test3", "save3"), userB);
-        Board post4 = new Board(new SubmitDto("test4", "save4"), userB);
-        Board post5 = new Board(new SubmitDto("test5", "save5"), userB);
+        User userA = new User("userA", "123", "a@a.com", Role.USER, true);
+        User userB = new User("userB", "123", "a@a.com", Role.USER, true);
+        Board post1 = new Board(new SubmitDto("test1", "save1", BoardStatus.LOST), userA);
+        Board post2 = new Board(new SubmitDto("test2", "save2", BoardStatus.LOST), userA);
+        Board post3 = new Board(new SubmitDto("test3", "save3", BoardStatus.LOST), userB);
+        Board post4 = new Board(new SubmitDto("test4", "save4", BoardStatus.LOST), userB);
+        Board post5 = new Board(new SubmitDto("test5", "save5", BoardStatus.LOST), userB);
 
         boardRepository.save(post1);
         boardRepository.save(post2);

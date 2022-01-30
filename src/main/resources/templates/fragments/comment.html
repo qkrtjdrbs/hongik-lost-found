@@ -4,10 +4,21 @@
 <div th:class="'card mb-2 group'+${comment.groupId}" th:id="'comment'+${comment.id}"
      th:style="${comment.parent} ? 'margin-left: 2%' : _">
     <!--댓글 작성자, 작성일-->
-    <div class="card-header bg-light d-flex justify-content-between">
-        <div th:text="${comment.user.username}"></div>
-        <div th:text="${{comment.createdDate}}"></div>
+    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <!--프로필 사진-->
+            <span class="mr-1">
+                <img th:if="${comment.user.picture}" th:src="${comment.user.picture}"
+                     width="30" height="30" style="border-radius: 50%; margin-right: 2px;" >
+                <i th:unless="${comment.user.picture}" class="bi bi-person-circle mr-1"
+                   style="font-size: 1.7rem;"></i>
+            </span>
+            <span th:text="${comment.user.username}">
+            </span>
+        </div>
+        <span th:text="${{comment.createdDate}}"></span>
     </div>
+
     <div class="card-body">
         <!--댓글 내용-->
         <p class="badge badge-secondary" th:text="${comment.parent} ? '@'+${comment.parent.user.username} : _"></p>
