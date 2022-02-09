@@ -13,7 +13,13 @@
                         <h4 class="m-0" th:field="${post.title}" th:text="${post.title}"></h4>
                         <span th:text="${{post.createdDate}}"></span>
                     </div>
-                    <div class="w-100 row m-0 justify-content-end" th:text="${post.user.username}"></div>
+                    <div class="w-100 row m-0 justify-content-end">
+                        <img th:if="${post.user.picture}" th:src="${post.user.picture}"
+                             width="40" height="40" style="border-radius: 50%; margin-right: 2px;" >
+                        <i th:unless="${post.user.picture}" class="bi bi-person-circle mr-1"
+                           style="font-size: 2rem; color: black"></i>
+                        <span th:text="${post.user.username}" class="my-auto"></span>
+                    </div>
 
                     <hr class="my-4">
 
