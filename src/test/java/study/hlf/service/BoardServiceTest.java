@@ -45,7 +45,7 @@ class BoardServiceTest {
     @Test
     void writeBoardTest(){
         User user = new User("test", "123", "a", Role.USER, true);
-        SubmitDto dto = new SubmitDto("t", "c", BoardStatus.LOST);
+        SubmitDto dto = new SubmitDto("t", "c", BoardStatus.LOST, null, null);
         Board board = new Board(dto, user);
         ReflectionTestUtils.setField(board, "id", 1L);
         given(userRepository.findById(any())).willReturn(Optional.of(user));
@@ -58,7 +58,7 @@ class BoardServiceTest {
     @Test
     void findOneByIdTest(){
         User user = new User("test", "123", "a", Role.USER, true);
-        SubmitDto dto = new SubmitDto("t", "c", BoardStatus.LOST);
+        SubmitDto dto = new SubmitDto("t", "c", BoardStatus.LOST, null, null);
         Board board = new Board(dto, user);
         ReflectionTestUtils.setField(board, "id", 1L);
         given(boardRepository.findById(1L)).willReturn(Optional.of(board));
@@ -73,12 +73,12 @@ class BoardServiceTest {
     @Test
     void editPostTest(){
         User user = new User("test", "123", "a", Role.USER, true);
-        SubmitDto dto = new SubmitDto("t", "c", BoardStatus.LOST);
+        SubmitDto dto = new SubmitDto("t", "c", BoardStatus.LOST, null, null);
         Board board = new Board(dto, user);
         ReflectionTestUtils.setField(board, "id", 1L);
         given(boardRepository.findById(1L)).willReturn(Optional.of(board));
 
-        boardService.editPost(1L, new SubmitDto("c_t", "c_c", BoardStatus.LOST), user.getId(), null, null);
+        boardService.editPost(1L, new SubmitDto("c_t", "c_c", BoardStatus.LOST, null, null), user.getId());
         assertThat(board.getTitle()).isEqualTo("c_t");
         assertThat(board.getContent()).isEqualTo("c_c");
     }
@@ -87,9 +87,9 @@ class BoardServiceTest {
     void searchBoardDynamicTest(){
         User userA = new User("testA", "123", "a", Role.USER, true);
         User userB = new User("testB", "123", "a", Role.USER, true);
-        SubmitDto dtoA = new SubmitDto("t1", "c1", BoardStatus.LOST);
-        SubmitDto dtoB = new SubmitDto("t2", "c2", BoardStatus.LOST);
-        SubmitDto dtoC = new SubmitDto("t3", "c3", BoardStatus.LOST);
+        SubmitDto dtoA = new SubmitDto("t1", "c1", BoardStatus.LOST, null, null);
+        SubmitDto dtoB = new SubmitDto("t2", "c2", BoardStatus.LOST, null, null);
+        SubmitDto dtoC = new SubmitDto("t3", "c3", BoardStatus.LOST, null, null);
         Board boardA = new Board(dtoA, userA);
         Board boardB = new Board(dtoA, userB);
         Board boardC = new Board(dtoB, userA);

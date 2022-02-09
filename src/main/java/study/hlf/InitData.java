@@ -46,10 +46,10 @@ public class InitData {
             Optional<User> user2 = userService.findByUsername("data2");
             for(int i=1;i<200;i++){
                 if(i % 2 == 0) {
-                    SubmitDto form = new SubmitDto("제목" + i, "테스트", BoardStatus.LOST);
+                    SubmitDto form = new SubmitDto("제목" + i, "테스트", BoardStatus.LOST, null, null);
                     boardService.writeBoard(user1.get().getId(), form, null, null);
                 } else {
-                    SubmitDto form = new SubmitDto("제목" + i, "테스트", BoardStatus.FOUND);
+                    SubmitDto form = new SubmitDto("제목" + i, "테스트", BoardStatus.FOUND, null, null);
                     boardService.writeBoard(user2.get().getId(), form, null, null);
                 }
             }

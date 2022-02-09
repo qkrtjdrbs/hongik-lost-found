@@ -120,11 +120,17 @@ public class BoardController {
     public String edit(@PathVariable Long id,
                        Model model,
                        @SessionAttribute(required = false, name = Const.LOGIN_USER) SessionUser loginUser){
-        Board post = boardService.findPostById(id);
+        Board post = boardService.justFindPostById(id);
         if(!post.getUser().getId().equals(loginUser.getId())){
             throw new NotAuthorizedException();
         }
-        model.addAttribute("form", new SubmitDto(post.getTitle(), post.getContent(), post.getStatus()));
+        model.addAttribute("form",
+                new SubmitDto(post.getTitle(),
+                        post.getContent(),
+                        post.getStatus(),
+                        post.getCoord().getLongitude(),
+                        post.getCoord().getLatitude()));
+
         return "submit";
     }
 
@@ -132,14 +138,12 @@ public class BoardController {
     public String edit(@PathVariable Long id,
                        @Valid @ModelAttribute(name = "form") SubmitDto form,
                        BindingResult bindingResult,
-                       @RequestParam Double longitude,
-                       @RequestParam Double latitude,
                        @SessionAttribute(required = false, name = Const.LOGIN_USER) SessionUser loginUser){
         if(bindingResult.hasErrors()){
             return "submit";
         }
 
-        boardService.editPost(id, form, loginUser.getId(), longitude, latitude);
+        boardService.editPost(id, form, loginUser.getId());
 
         return "redirect:/board/" + id;
     }

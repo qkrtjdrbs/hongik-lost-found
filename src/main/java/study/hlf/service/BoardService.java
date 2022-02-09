@@ -33,7 +33,7 @@ public class BoardService {
     }
 
     @Transactional
-    public void editPost(Long id, SubmitDto form, Long requestUserId, Double longitude, Double latitude){
+    public void editPost(Long id, SubmitDto form, Long requestUserId){
         try {
             Board post = this.justFindPostById(id);
             if(!requestUserId.equals(post.getUser().getId())){
@@ -41,7 +41,7 @@ public class BoardService {
             }
             post.changeTitle(form.getTitle());
             post.changeContent(form.getContent());
-            post.changeCoord(new Coord(longitude, latitude));
+            post.changeCoord(new Coord(form.getLongitude(), form.getLatitude()));
             post.changeStatus(form.getStatus());
         } catch (Exception e) {
             e.printStackTrace();

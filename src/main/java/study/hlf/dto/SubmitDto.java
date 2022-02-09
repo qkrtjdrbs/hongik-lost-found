@@ -30,4 +30,6 @@ public class SubmitDto {
     @Enumerated(value = EnumType.STRING)
     private BoardStatus status;
 
+    private Double longitude;
+    private Double latitude;
 }

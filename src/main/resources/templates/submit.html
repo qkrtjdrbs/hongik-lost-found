@@ -34,8 +34,9 @@
                       th:errorclass="field-error"></textarea>
             <div class="field-error" th:errors="*{content}" />
         </div>
-        <input type="hidden" id="longitude" name="longitude">
-        <input type="hidden" id="latitude" name="latitude">
+
+        <input type="hidden" th:field="*{longitude}" id="longitude" name="longitude">
+        <input type="hidden" th:field="*{latitude}" id="latitude" name="latitude">
 
         <div class="hr-sect">장소 등록</div>
 
@@ -68,28 +69,53 @@
             level: 2 // 지도의 확대 레벨
         };
 
+    // 지도에 표시될 마커 입니다
+    var marker;
+
     // 지도를 생성합니다
     var map = new kakao.maps.Map(mapContainer, mapOption);
 
     // 주소-좌표 변환 객체를 생성합니다
     var geocoder = new kakao.maps.services.Geocoder();
 
-    // 주소로 좌표를 검색합니다
-    geocoder.addressSearch('서울특별시 마포구 와우산로 94 홍익대학교', function(result, status) {
+    // 등록된 좌표 없을 시 홍익대학교 기본 주소, 있을 시 그 장소에 마커를 생성해서 보여줌
+    if(document.getElementById("latitude").value == ''){
+        // 주소로 좌표를 검색합니다
+        geocoder.addressSearch('서울특별시 마포구 와우산로 94 홍익대학교', function(result, status) {
 
-        // 정상적으로 검색이 완료됐으면
-        if (status === kakao.maps.services.Status.OK) {
+            // 정상적으로 검색이 완료됐으면
+            if (status === kakao.maps.services.Status.OK) {
 
-            var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-            document.getElementById("latitude").value = result[0].y;
-            document.getElementById("longitude").value = result[0].x;
-            // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
-            map.setCenter(coords);
-        }
-    });
+                var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+                document.getElementById("latitude").value = result[0].y;
+                document.getElementById("longitude").value = result[0].x;
 
-    var marker = new kakao.maps.Marker(), // 클릭한 위치를 표시할 마커입니다
-        infowindow = new kakao.maps.InfoWindow({zindex:1}); // 클릭한 위치에 대한 주소를 표시할 인포윈도우입니다
+                // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
+                map.setCenter(coords);
+
+                // 마커를 생성합니다
+                marker = new kakao.maps.Marker({
+                    position: coords
+                });
+
+                // 마커가 지도 위에 표시되도록 설정합니다
+                marker.setMap(map);
+            }
+        });
+    } else {
+        var coords = new kakao.maps.LatLng(document.getElementById("latitude").value,
+            document.getElementById("longitude").value);
+        map.setCenter(coords);
+
+        marker = new kakao.maps.Marker({
+            position: coords
+        });
+
+        marker.setMap(map);
+    }
+
+    // 클릭한 위치에 대한 주소를 표시할 인포윈도우입니다
+    var infowindow = new kakao.maps.InfoWindow({zindex:1});
 
     // 현재 지도 중심좌표로 주소를 검색해서 지도 좌측 상단에 표시합니다
     searchAddrFromCoords(map.getCenter(), displayCenterInfo);
@@ -110,6 +136,7 @@
                 marker.setPosition(mouseEvent.latLng);
                 marker.setMap(map);
 
+                // input 태그 좌표값 변경
                 document.getElementById("latitude").value = mouseEvent.latLng.Ma;
                 document.getElementById("longitude").value = mouseEvent.latLng.La;
 
