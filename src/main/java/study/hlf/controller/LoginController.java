@@ -48,7 +48,7 @@ public class LoginController {
 
         User loginUser = userService.login(user);
         if(loginUser == null){
-            bindingResult.reject("loginFail", "아이디가 없거나 잘못된 비밀번호입니다.");
+            bindingResult.reject("loginFail");
             return "login";
         }
 
