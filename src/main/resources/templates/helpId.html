@@ -17,7 +17,7 @@
         <div>
             <label for="email">찾으려는 아이디에 등록된 이메일로 아이디가 전송됩니다.</label>
             <input type="text" id="email" th:field="*{email}" class="form-control"
-                   placeholder="이메일 입력..."
+                   placeholder="이메일"
                    th:errorclass="field-error">
             <div class="field-error" th:errors="*{email}" />
         </div>
