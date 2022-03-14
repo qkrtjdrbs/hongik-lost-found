@@ -1,3 +1,4 @@
+/*
 package study.hlf.repository;
 
 import org.assertj.core.api.Assertions;
@@ -91,4 +92,4 @@ class BoardRepositoryTest {
         Page<Board> likeFindAll = boardRepository.findBoardDynamic(searchByNoCondition, PageRequest.of(0, 5));
         assertThat(likeFindAll.getContent().size()).isEqualTo(5);
     }
-}
+}*/
