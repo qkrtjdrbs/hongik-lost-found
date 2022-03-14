@@ -47,10 +47,11 @@ public class CommentAlarmHandler extends TextWebSocketHandler {
         if(!payload.isEmpty()){
             String str[] = payload.split(",");
 
-            if(str.length == 3){
+            if(str.length == 4){
                 Long receiverId = Long.parseLong(str[0]);
                 Long boardId = Long.parseLong(str[1]);
-                String content = str[2];
+                Long commentId = Long.parseLong(str[2]);
+                String content = str[3];
 
                 User receiver = userService.findUserById(receiverId);
                 WebSocketSession receiverSession = userSessionsMap.get(receiver.getEmail());
@@ -64,7 +65,8 @@ public class CommentAlarmHandler extends TextWebSocketHandler {
                     if(substring.length() == MAX_COMMENT_LENGTH){
                         substring += "...";
                     }
-                    TextMessage textMessage = new TextMessage("<a href='/board/" + boardId + "#commentWriteForm'>" +
+                    TextMessage textMessage = new TextMessage("<a href='/board/" + boardId +
+                            "#comment" + commentId + "'>" +
                             post.getTitle() + " 게시물에 " +
                             "새 댓글이 달렸습니다 : " + substring + "</a>");
                     receiverSession.sendMessage(textMessage);

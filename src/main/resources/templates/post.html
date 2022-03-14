@@ -144,8 +144,13 @@
                     return false;
                 }
 
-                let commentAlarm = owner_id + "," + board_id + "," + content.value;
+                var el = document.createElement('comment');
+                el.innerHTML = response;
+                var commentId = el.getElementsByClassName('card')[0].id.substr(7);
+
+                let commentAlarm = owner_id + "," + board_id + "," + commentId + "," + content.value;
                 sock.send(commentAlarm);
+
 
                 $('#commentTable').append(response);
                 content.value = "";
