@@ -6,6 +6,7 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
+import study.hlf.controller.CommentAlarmHandler;
 
 /**
  * HttpSessionHandshakeInterceptor : WebSocket Session에 HttpSession 정보도 추가해줌!!

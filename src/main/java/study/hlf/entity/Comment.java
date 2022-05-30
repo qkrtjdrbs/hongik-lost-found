@@ -36,10 +36,12 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name = "board_id")
     private Board board;
 
+    // 자식 입장에서 자식(Many) to 부모(One)
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "parent_id")
     private Comment parent;
 
+    // 부모 입장에서 부모(One) to 자식(Many)
     @OneToMany(mappedBy = "parent")
     private List<Comment> children = new ArrayList<>();
 
