@@ -1,6 +1,6 @@
-# Hongik Lost and Found https://github.com/qkrtjdrbs/hongik-lost-found
+# Hongik Lost and Found
 
-> 교내 분실물 게시판
+> 교내 분실물 게시판 https://github.com/qkrtjdrbs/hongik-lost-found
 
 ### 구현 동기
 
@@ -289,34 +289,73 @@ Thymeleaf + Spring Boot의 조합으로 개발했습니다.
 
 ```
 Amazon ec2 인스턴스를 생성하고 그 안에 프로젝트 파일을 넣은 다음 jar 파일을 생성하고 실행하여 배포했습니다.
-
-추후 Jenkins를 이용한 배포 자동화나 nginx를 이용한 무중단 배포도 해볼 계획입니다.
 ```
 
 ---
 
 # 트러블 슈팅
 
-## 무한 대댓글
+## 1. 게시물 중복 작성 처리
+
+```
+유저가 게시물을 작성할 때 작성 버튼을 여러번 클릭해서 중복 게시물이 여러개 작성될 수 있습니다.
+
+매크로 게시물 도배로 악용될 우려가 있기 때문에 이를 방어하고자 Redis를 사용했습니다.
+```
+
+> Redis에 저장되는 객체입니다.
+
+```java
+@Getter
+@RedisHash(value = "post", timeToLive = 1)
+public class Post {
+    @Id
+    private String id;
+    @Indexed
+    private String email;
+    private LocalDateTime createdAt;
+
+    public Post(String email){
+        this.email = email;
+        this.createdAt = LocalDateTime.now();
+    }
+}
+```
+
+- email 필드는 게시물 작성자의 이메일 계정입니다.
+- createdAt은 게시물 작성 일자입니다.
+- timeToLive 필드를 1sec로 설정하였습니다.
+
+```
+사용자가 게시물을 작성하기 전, 미리 redis에 해당 사용자가 작성한 데이터가 있는지 확인합니다.
+```
+
+- **만약 데이터가 존재한다면**, 1sec 이내에 글이 작성되었다는 의미이므로 에러를 발생시킵니다.
+  ![중복작성](https://github.com/qkrtjdrbs/hongik-lost-found/assets/68425462/cdc6b234-13b6-4613-bde7-cdee9066df29)
+- **존재하지 않는다면**, 게시물 작성 로직으로 넘어가고 마지막에 redis에 글 작성자에 대한 객체를 저장합니다.
+
+---
+
+## 2. 무한 대댓글
 
 > Comment Entity 구조입니다.
 
 ```java
-  @Entity
-  public class Comment {
+@Entity
+public class Comment {
 
-      ...
+    ...
 
-      @ManyToOne(fetch = LAZY)
-      @JoinColumn(name = "parent_id")
-      private Comment parent;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "parent_id")
+    private Comment parent;
 
-      @OneToMany(mappedBy = "parent")
-      private List<Comment> children = new ArrayList<>();
+    @OneToMany(mappedBy = "parent")
+    private List<Comment> children = new ArrayList<>();
 
-      ...
+    ...
 
-  }
+}
 ```
 
 ```
