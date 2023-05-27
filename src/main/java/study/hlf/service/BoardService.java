@@ -12,6 +12,7 @@ import study.hlf.entity.Coord;
 import study.hlf.exception.NotAuthorizedException;
 import study.hlf.repository.BoardRepository;
 import study.hlf.repository.BoardSearch;
+import study.hlf.repository.RecentPostRepository;
 import study.hlf.repository.UserRepository;
 
 import java.util.Optional;

@@ -18,14 +18,17 @@ import study.hlf.dto.SessionUser;
 import study.hlf.dto.SubmitDto;
 import study.hlf.entity.Board;
 import study.hlf.entity.Comment;
+import study.hlf.entity.Post;
 import study.hlf.entity.User;
 import study.hlf.exception.NotAuthorizedException;
 import study.hlf.repository.BoardSearch;
+import study.hlf.repository.RecentPostRepository;
 import study.hlf.service.BoardService;
 import study.hlf.service.CommentService;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.util.StringUtils.*;
 
@@ -36,6 +39,7 @@ public class BoardController {
 
     private final BoardService boardService;
     private final CommentService commentService;
+    private final RecentPostRepository recentPostRepository;
 
     @GetMapping("/submit")
     public String boardSubmitForm(@ModelAttribute(name = "form") SubmitDto form){
@@ -54,11 +58,24 @@ public class BoardController {
             log.info("에러 : {}", bindingResult.getFieldError());
             return "submit";
         }
+
+        // 로그인 유저가 최근 글 작성한 적 있는지 확인
+        Optional<Post> findUserPost = recentPostRepository.findByEmail(loginUser.getEmail());
+        if(findUserPost.isPresent()){
+            bindingResult.reject("shortTermFail");
+            return "submit";
+        }
+
         Long boardId = boardService.writeBoard(loginUser.getId(), form, longitude, latitude);
         if(boardId == null){
             bindingResult.reject("submitPostFail");
             return "submit";
         }
+        
+        // 최근 글 작성 정보 redis 저장
+        Post post = new Post(loginUser.getEmail());
+        recentPostRepository.save(post);
+
         return "redirect:/board/" + boardId;
     }
 
